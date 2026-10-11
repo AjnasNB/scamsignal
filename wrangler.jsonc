@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "scamsignal",
+  "account_id": "4fd82676dc0328c3ae8812138409e980",
+  "compatibility_date": "2026-10-11",
+  "workers_dev": true,
+  "routes": [{"pattern":"scamsignal.ajnasnb.com","custom_domain":true}],
+  "assets": {
+    "directory": "./apps/web/dist",
+    "not_found_handling": "single-page-application"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "verified_at": "2026-10-11T14:07:06.910Z",
+  "network": "Arkiv Tiramisu",
+  "live_query": "app_id = str('scamsignal-v1') AND schema_version = u64(1) AND $expiresAt > u64(438937) AND $creator = addr(0xd153C0cC313884DA0065615BB411Dfb8b873fE54)",
+  "read_block": "438937",
+  "results": [
+    {
+      "sample": "keepassdx",
+      "passed": true,
+      "passport": "exact_match",
+      "warning_count": 0,
+      "entity_keys": [
+        "0x832ba07bebdf5419b435b465e9534593ce27e31340cadd4fb8b9bc6f6464af3b"
+      ]
+    },
+    {
+      "sample": "aegis",
+      "passed": true,
+      "passport": "exact_match",
+      "warning_count": 0,
+      "entity_keys": [
+        "0x5fc5b9f2b55895436cc6dec24960054d6ed62d52fb2e0db585f924f9204f061f"
+      ]
+    },
+    {
+      "sample": "newpipe",
+      "passed": true,
+      "passport": "exact_match",
+      "warning_count": 0,
+      "entity_keys": [
+        "0xd70d135c8a5f1fd327599a52a64e86a92d1f681e97f080ddceaaf4c1133b55e3"
+      ]
+    },
+    {
+      "sample": "insecurebank",
+      "passed": true,
+      "passport": "exact_match",
+      "warning_count": 1,
+      "entity_keys": [
+        "0x0af0f962c70e776bbf18552df92e6cdadaaace9d5ee34d29cae96be43aacb038",
+        "0x4e5fee5c0b099576cd45da317450f72d5a7e3627aa7f9e888f4d1f120b779bea"
+      ]
+    },
+    {
+      "sample": "pivaa",
+      "passed": true,
+      "passport": "exact_match",
+      "warning_count": 1,
+      "entity_keys": [
+        "0x1e56365e7d4918ed99c24e317231d2d2ef916214b216bbafd71299ce9cccf024",
+        "0x1889872616568385536a106f74951b0b2484c51836cbca2a319a8b0efda2dc45"
+      ]
+    }
+  ],
+  "passed": true
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@scamsignal/arkiv-client",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "@arkiv-network/sdk": "~0.8.0",
+    "viem": "^2.38.0",
+    "zod": "^4.1.0"
+  }
+}

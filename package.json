@@ -1,0 +1,27 @@
+{
+  "name": "scamsignal",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/web",
+    "packages/arkiv-client"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @scamsignal/web",
+    "build": "node scripts/prepare-demo.mjs && npm run build --workspace @scamsignal/web",
+    "test": "vitest run packages/arkiv-client",
+    "typecheck": "tsc --project tsconfig.operators.json",
+    "test:e2e": "playwright test --config tests/web/playwright.config.ts",
+    "arkiv:seed": "tsx scripts/seed-arkiv.ts",
+    "arkiv:verify": "tsx scripts/verify-arkiv.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "@types/node": "^24.19.2",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0",
+    "vitest": "^5.0.3",
+    "wrangler": "^4.83.0"
+  }
+}

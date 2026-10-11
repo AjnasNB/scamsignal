@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "network": "Arkiv Tiramisu",
+  "chain_id": 7738577,
+  "started_at": "2026-10-11T14:05:17.163Z",
+  "reviewer_wallet": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+  "observer_wallet": "0x019AD48DcD0236D19ca86E8F2F4c3B229c315C54",
+  "data_notice": "Synthetic protocol fixtures only. Hashes do not identify real APKs or personal data. No production records were changed.",
+  "fixtures": [
+    {
+      "label": "short-lived-expiry",
+      "entity_key": "0x4d65fcc8282b7a343b2ceae3c29ffbf44d060c5fdff8ceb2d954ed3efe0acc79",
+      "tx_hash": "0x2c390acb533e8dc2568de7bbae5f05604a6968e7db29243de361361e06520fc4",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x2c390acb533e8dc2568de7bbae5f05604a6968e7db29243de361361e06520fc4",
+      "requested_expiry_block": "438900",
+      "app_id": "scamsignal-fixtures-v1",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "created_at_block": "438885",
+      "expires_at_block": "438900",
+      "live_read_at": "2026-10-11T14:05:25.661Z"
+    },
+    {
+      "label": "unapproved-author",
+      "entity_key": "0xbdc79fe940dc5340a691c5e4aff828b7f40c9942a9b1928e6d78bb23af247fad",
+      "tx_hash": "0xe0d4209c6269b5e280cee3c01c410653301351e19565aacf386912f37acd59c8",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0xe0d4209c6269b5e280cee3c01c410653301351e19565aacf386912f37acd59c8",
+      "requested_expiry_block": "482092",
+      "app_id": "scamsignal-v1",
+      "creator": "0x019AD48DcD0236D19ca86E8F2F4c3B229c315C54",
+      "apk_sha256": "9f37233bced46302a34b63424529cc268533340e14850194dfb7ef07fba22b9a",
+      "package_name": "dev.scamsignal.synthetic.creator",
+      "expires_at_block": "482092"
+    },
+    {
+      "label": "synthetic-advisory",
+      "entity_key": "0xf5bf071dfead46df5371e3fd2a316c3a7760b6f2f95a6cdbe324544daf1e1ead",
+      "tx_hash": "0xab61477126928753fda09a2e51cd4b56d1e5e150ff46dff5732c038f4f00faae",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0xab61477126928753fda09a2e51cd4b56d1e5e150ff46dff5732c038f4f00faae",
+      "requested_expiry_block": "438954",
+      "app_id": "scamsignal-v1",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "apk_sha256": "bbd827ef92c057b32b7c64654ea1f1022c7e230758e26d91e43d5dcb60031828",
+      "package_name": "dev.scamsignal.synthetic.correction",
+      "expires_at_block": "438954"
+    },
+    {
+      "label": "synthetic-authorized-retraction",
+      "entity_key": "0x5c6f744f90a5836a34a876bf0e2d72120d78de033fc5cf113818db2263da29c1",
+      "tx_hash": "0x459a90edba46d26e8b4fa1144618b722a0e7760733976107a885733a951666e4",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x459a90edba46d26e8b4fa1144618b722a0e7760733976107a885733a951666e4",
+      "requested_expiry_block": "438986",
+      "app_id": "scamsignal-v1",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "target_entity_key": "0xf5bf071dfead46df5371e3fd2a316c3a7760b6f2f95a6cdbe324544daf1e1ead",
+      "apk_sha256": "bbd827ef92c057b32b7c64654ea1f1022c7e230758e26d91e43d5dcb60031828",
+      "package_name": "dev.scamsignal.synthetic.correction",
+      "expires_at_block": "438986"
+    }
+  ],
+  "checks": {
+    "expiry_live_before_deadline": true,
+    "unapproved_creator_decoder_rejected": true,
+    "approved_creator_query_excluded_forgery": true,
+    "approved_creator_query": "app_id = str('scamsignal-v1') AND apk_sha256 = bytes32(0x9f37233bced46302a34b63424529cc268533340e14850194dfb7ef07fba22b9a) AND $creator = addr(0xd153C0cC313884DA0065615BB411Dfb8b873fE54)",
+    "original_creator_authorized_retraction": true,
+    "correction_lifetime_covers_target": true,
+    "warning_count_before_retraction": 1,
+    "warning_count_after_retraction": 0,
+    "expired_entity_getEntity_throws": true,
+    "expiry_error_type": "NoEntityFoundError",
+    "expiry_observed_block": "438900"
+  },
+  "transfers": [
+    {
+      "tx_hash": "0x49ee3ec00b31eff5663079da28af5807ce1111a3be61396bc183f9b0abd24e7c",
+      "from": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "to": "0x019AD48DcD0236D19ca86E8F2F4c3B229c315C54",
+      "amount_test_glm": "0.02",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x49ee3ec00b31eff5663079da28af5807ce1111a3be61396bc183f9b0abd24e7c"
+    }
+  ],
+  "completed_at": "2026-10-11T14:05:54.058Z",
+  "status": "passed"
+}

@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "app_id": "scamsignal-v1",
+  "trusted_creators": [
+    "0xd153C0cC313884DA0065615BB411Dfb8b873fE54"
+  ],
+  "reviewer_labels": {
+    "0xd153c0cc313884da0065615bb411dfb8b873fe54": "ScamSignal evaluation reviewer"
+  },
+  "rpc_url": "https://rpc.tiramisu.db-chain.testnet.arkiv.network",
+  "ws_url": "wss://rpc.tiramisu.db-chain.testnet.arkiv.network",
+  "policy_note": "Project-curated evaluation references. Approval establishes reviewer identity, not publisher endorsement or APK safety."
+}

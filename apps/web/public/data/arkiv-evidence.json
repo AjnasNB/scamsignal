@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "network": "Arkiv Tiramisu",
+  "chain_id": 7738577,
+  "creator_wallet": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+  "records": [
+    {
+      "sample_id": "keepassdx",
+      "kind": "passport",
+      "apk_sha256": "99dccd0c350be4a97dc7b90ccd3c83dfa41f8179f5db1a7c071c17cc0278cc3a",
+      "package_name": "com.kunzisoft.keepass.libre",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0x832ba07bebdf5419b435b465e9534593ce27e31340cadd4fb8b9bc6f6464af3b",
+      "tx_hash": "0x552a60aeb801cc90bf51ced7696aaa64c253d08819128d451e4a42b51accd0ad",
+      "expires_at_block": "1734766",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x552a60aeb801cc90bf51ced7696aaa64c253d08819128d451e4a42b51accd0ad"
+    },
+    {
+      "sample_id": "aegis",
+      "kind": "passport",
+      "apk_sha256": "fa091c91912c0d56ec3553394fac4158f9a9d178e93bcbb35419601d788cb528",
+      "package_name": "com.beemdevelopment.aegis",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0x5fc5b9f2b55895436cc6dec24960054d6ed62d52fb2e0db585f924f9204f061f",
+      "tx_hash": "0x1545ca4cc4006a089cd314a14234a3e5b7edfcab92a2af56cef2dbf89ebb1d2a",
+      "expires_at_block": "1734769",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x1545ca4cc4006a089cd314a14234a3e5b7edfcab92a2af56cef2dbf89ebb1d2a"
+    },
+    {
+      "sample_id": "newpipe",
+      "kind": "passport",
+      "apk_sha256": "18447bfb1e06d113edc88df93f471827280de06f6f3d4dc42f56f28b9c1bab79",
+      "package_name": "org.schabi.newpipe",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0xd70d135c8a5f1fd327599a52a64e86a92d1f681e97f080ddceaaf4c1133b55e3",
+      "tx_hash": "0x223b220d621b82764d8d300014f66201aea387abaa72c45cd2a213e75df15995",
+      "expires_at_block": "1734772",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x223b220d621b82764d8d300014f66201aea387abaa72c45cd2a213e75df15995"
+    },
+    {
+      "sample_id": "insecurebank",
+      "kind": "passport",
+      "apk_sha256": "b18af2a0e44d7634bbcdf93664d9c78a2695e050393fcfbb5e8b91f902d194a4",
+      "package_name": "com.android.insecurebankv2",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0x0af0f962c70e776bbf18552df92e6cdadaaace9d5ee34d29cae96be43aacb038",
+      "tx_hash": "0x27fee619e47dbfd93a72f80610050564d93f023ff81ca8540cfaa0ce0c6fbac6",
+      "expires_at_block": "1734774",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x27fee619e47dbfd93a72f80610050564d93f023ff81ca8540cfaa0ce0c6fbac6"
+    },
+    {
+      "sample_id": "insecurebank",
+      "kind": "advisory",
+      "apk_sha256": "b18af2a0e44d7634bbcdf93664d9c78a2695e050393fcfbb5e8b91f902d194a4",
+      "package_name": "com.android.insecurebankv2",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0x4e5fee5c0b099576cd45da317450f72d5a7e3627aa7f9e888f4d1f120b779bea",
+      "tx_hash": "0x99b06d1b2ecf887020f0447548c9fd984ead7c8d9d0e497737569918bcae7363",
+      "expires_at_block": "1043577",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x99b06d1b2ecf887020f0447548c9fd984ead7c8d9d0e497737569918bcae7363"
+    },
+    {
+      "sample_id": "pivaa",
+      "kind": "passport",
+      "apk_sha256": "57887e1d1e119939eec0e929801b049f8037cf90d2accab479a48f0d4dd2c19a",
+      "package_name": "com.htbridge.pivaa",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0x1e56365e7d4918ed99c24e317231d2d2ef916214b216bbafd71299ce9cccf024",
+      "tx_hash": "0x46389e5a42d1ef9a707abcded8719f16ff9ccee83d9d1875c4a4ccaf186ff989",
+      "expires_at_block": "1734779",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x46389e5a42d1ef9a707abcded8719f16ff9ccee83d9d1875c4a4ccaf186ff989"
+    },
+    {
+      "sample_id": "pivaa",
+      "kind": "advisory",
+      "apk_sha256": "57887e1d1e119939eec0e929801b049f8037cf90d2accab479a48f0d4dd2c19a",
+      "package_name": "com.htbridge.pivaa",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0x1889872616568385536a106f74951b0b2484c51836cbca2a319a8b0efda2dc45",
+      "tx_hash": "0xb4bc8c6886898a29ec2eac976406e231e18158310db179d6bddbcc35d9e95b80",
+      "expires_at_block": "1043582",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0xb4bc8c6886898a29ec2eac976406e231e18158310db179d6bddbcc35d9e95b80"
+    }
+  ],
+  "published_at": "2026-10-11T14:01:59.698Z",
+  "verified_at": "2026-10-11T14:02:00.369Z",
+  "live_query": "app_id = str('scamsignal-v1') AND schema_version = u64(1) AND $expiresAt > u64(438783) AND $creator = addr(0xd153C0cC313884DA0065615BB411Dfb8b873fE54)",
+  "verified_record_count": 7,
+  "read_block": "438784"
+}

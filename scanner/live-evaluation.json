@@ -1,0 +1,82 @@
+{
+  "tested_at": "2026-10-11T13:57:36.579039+00:00",
+  "api_url": "https://scamsignal-api-20261011.azurewebsites.net",
+  "health": {
+    "status": "ok",
+    "schema_version": 1,
+    "signature_verifier": "available",
+    "mode": "static-only",
+    "max_apk_bytes": 52428800
+  },
+  "frontend_cors": "passed",
+  "samples": [
+    {
+      "id": "keepassdx",
+      "apk_sha256": "99dccd0c350be4a97dc7b90ccd3c83dfa41f8179f5db1a7c071c17cc0278cc3a",
+      "package_name": "com.kunzisoft.keepass.libre",
+      "signature": "verified",
+      "permissions": 9,
+      "finding_ids": [],
+      "seconds": 21.58,
+      "session_auth_checked": true,
+      "delete_checked": true
+    },
+    {
+      "id": "aegis",
+      "apk_sha256": "fa091c91912c0d56ec3553394fac4158f9a9d178e93bcbb35419601d788cb528",
+      "package_name": "com.beemdevelopment.aegis",
+      "signature": "verified",
+      "permissions": 6,
+      "finding_ids": [
+        "sensitive-permissions"
+      ],
+      "seconds": 1.66,
+      "session_auth_checked": true,
+      "delete_checked": true
+    },
+    {
+      "id": "newpipe",
+      "apk_sha256": "18447bfb1e06d113edc88df93f471827280de06f6f3d4dc42f56f28b9c1bab79",
+      "package_name": "org.schabi.newpipe",
+      "signature": "verified",
+      "permissions": 11,
+      "finding_ids": [
+        "sensitive-permissions"
+      ],
+      "seconds": 2.31,
+      "session_auth_checked": true,
+      "delete_checked": true
+    },
+    {
+      "id": "insecurebank",
+      "apk_sha256": "b18af2a0e44d7634bbcdf93664d9c78a2695e050393fcfbb5e8b91f902d194a4",
+      "package_name": "com.android.insecurebankv2",
+      "signature": "verified",
+      "permissions": 12,
+      "finding_ids": [
+        "sensitive-permissions",
+        "debuggable",
+        "legacy-target"
+      ],
+      "seconds": 1.47,
+      "session_auth_checked": true,
+      "delete_checked": true
+    },
+    {
+      "id": "pivaa",
+      "apk_sha256": "57887e1d1e119939eec0e929801b049f8037cf90d2accab479a48f0d4dd2c19a",
+      "package_name": "com.htbridge.pivaa",
+      "signature": "verified",
+      "permissions": 12,
+      "finding_ids": [
+        "sensitive-permissions",
+        "debuggable",
+        "legacy-target"
+      ],
+      "seconds": 1.52,
+      "session_auth_checked": true,
+      "delete_checked": true
+    }
+  ],
+  "tokens_published": false
+}

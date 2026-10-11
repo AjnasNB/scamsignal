@@ -1,0 +1,650 @@
+{
+  "schema_version": 1,
+  "evaluated_at": "2026-10-11T13:50:40.194975+00:00",
+  "method": "Androguard 4.1.4 static manifest parsing + Android Build Tools 35.0.0 apksigner signature verification. APKs were not installed or executed.",
+  "limitations": [
+    "Five samples demonstrate integration behavior, not detection accuracy.",
+    "Valid signatures establish identity, not publisher legitimacy or safety.",
+    "Declared permissions are capabilities; grants, actual behavior, remote code, DEX behavior and signing lineage are not assessed.",
+    "Two risky cases are purpose-built training apps, not real-world malicious APKs.",
+    "APK binaries and embedded personal strings are excluded from this publication."
+  ],
+  "samples": [
+    {
+      "id": "keepassdx",
+      "name": "KeePassDX",
+      "classification": "upstream-open-source-release",
+      "release": "4.5.5 libre",
+      "license": "GPL-3.0",
+      "source_url": "https://github.com/Kunzisoft/KeePassDX/releases/tag/4.5.5",
+      "license_url": "https://github.com/Kunzisoft/KeePassDX/blob/master/LICENSE",
+      "download_url": "https://github.com/Kunzisoft/KeePassDX/releases/download/4.5.5/KeePassDX-4.5.5-libre.apk",
+      "ground_truth_note": "Upstream release provenance; not a guarantee of safety.",
+      "report": {
+        "schema_version": 1,
+        "apk_sha256": "99dccd0c350be4a97dc7b90ccd3c83dfa41f8179f5db1a7c071c17cc0278cc3a",
+        "file_size": 16746852,
+        "package_name": "com.kunzisoft.keepass.libre",
+        "version_name": "4.5.5",
+        "version_code": 45500,
+        "app_name": "KeePassDX",
+        "signature": {
+          "status": "verified",
+          "signer_sha256": [
+            "7d55b8af210381aabf960f07e17cf7857b6d2a642ca2da6bf0bdf1b200362f04"
+          ],
+          "schemes": [
+            "v1",
+            "v2"
+          ],
+          "errors": []
+        },
+        "permissions": [
+          {
+            "name": "android.permission.FOREGROUND_SERVICE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.FOREGROUND_SERVICE_DATA_SYNC",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.POST_NOTIFICATIONS",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.SCHEDULE_EXACT_ALARM",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.USE_BIOMETRIC",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.USE_FINGERPRINT",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.VIBRATE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "com.kunzisoft.keepass.libre.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          }
+        ],
+        "findings": [],
+        "coverage": {
+          "manifest": true,
+          "signature": true,
+          "dex": false,
+          "notes": [
+            "Static inspection only; the APK was not installed or executed.",
+            "Declared permissions are capabilities, not observed grants or behavior.",
+            "DEX behavior, remote code, network security resources, and signer rotation lineage are not assessed.",
+            "No findings does not establish that an app is safe."
+          ]
+        },
+        "analyzed_at": "2026-10-11T13:50:36.816158+00:00"
+      }
+    },
+    {
+      "id": "aegis",
+      "name": "Aegis",
+      "classification": "upstream-open-source-release",
+      "release": "3.4.3",
+      "license": "GPL-3.0",
+      "source_url": "https://github.com/beemdevelopment/Aegis/releases/tag/v3.4.3",
+      "license_url": "https://github.com/beemdevelopment/Aegis/blob/master/LICENSE",
+      "download_url": "https://github.com/beemdevelopment/Aegis/releases/download/v3.4.3/aegis-v3.4.3.apk",
+      "ground_truth_note": "Upstream release provenance; not a guarantee of safety.",
+      "report": {
+        "schema_version": 1,
+        "apk_sha256": "fa091c91912c0d56ec3553394fac4158f9a9d178e93bcbb35419601d788cb528",
+        "file_size": 6881897,
+        "package_name": "com.beemdevelopment.aegis",
+        "version_name": "3.4.3",
+        "version_code": 82,
+        "app_name": "Aegis",
+        "signature": {
+          "status": "verified",
+          "signer_sha256": [
+            "c6db80a8e14e5230c1de8415ef820d13dc901d8fe33cf3acb57b6862d858a823"
+          ],
+          "schemes": [
+            "v1",
+            "v2"
+          ],
+          "errors": []
+        },
+        "permissions": [
+          {
+            "name": "android.permission.CAMERA",
+            "category": "sensitive",
+            "description_en": "Requests camera access.",
+            "description_hi": "कैमरे तक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.RECEIVE_BOOT_COMPLETED",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.USE_BIOMETRIC",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.USE_FINGERPRINT",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.VIBRATE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "com.beemdevelopment.aegis.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          }
+        ],
+        "findings": [
+          {
+            "id": "sensitive-permissions",
+            "severity": "review",
+            "title_en": "Sensitive capabilities requested",
+            "title_hi": "संवेदनशील क्षमताएँ माँगी गई हैं",
+            "evidence": [
+              "android.permission.CAMERA"
+            ],
+            "explanation_en": "Check whether these permissions are necessary for the app's purpose. A declaration is not evidence that access was granted or abused.",
+            "explanation_hi": "जाँचें कि ये अनुमतियाँ ऐप के काम के लिए ज़रूरी हैं या नहीं। घोषणा से यह साबित नहीं होता कि पहुँच मिली या उसका दुरुपयोग हुआ।"
+          }
+        ],
+        "coverage": {
+          "manifest": true,
+          "signature": true,
+          "dex": false,
+          "notes": [
+            "Static inspection only; the APK was not installed or executed.",
+            "Declared permissions are capabilities, not observed grants or behavior.",
+            "DEX behavior, remote code, network security resources, and signer rotation lineage are not assessed.",
+            "No findings does not establish that an app is safe."
+          ]
+        },
+        "analyzed_at": "2026-10-11T13:50:37.436181+00:00"
+      }
+    },
+    {
+      "id": "newpipe",
+      "name": "NewPipe",
+      "classification": "upstream-open-source-release",
+      "release": "0.29.1",
+      "license": "GPL-3.0",
+      "source_url": "https://github.com/TeamNewPipe/NewPipe/releases/tag/v0.29.1",
+      "license_url": "https://github.com/TeamNewPipe/NewPipe/blob/dev/LICENSE",
+      "download_url": "https://github.com/TeamNewPipe/NewPipe/releases/download/v0.29.1/NewPipe_v0.29.1.apk",
+      "ground_truth_note": "Upstream release provenance; not a guarantee of safety.",
+      "report": {
+        "schema_version": 1,
+        "apk_sha256": "18447bfb1e06d113edc88df93f471827280de06f6f3d4dc42f56f28b9c1bab79",
+        "file_size": 11507122,
+        "package_name": "org.schabi.newpipe",
+        "version_name": "0.29.1",
+        "version_code": 1015,
+        "app_name": "NewPipe",
+        "signature": {
+          "status": "verified",
+          "signer_sha256": [
+            "cb84069bd68116bafae5ee4ee5b08a567aa6d898404e7cb12f9e756df5cf5cab"
+          ],
+          "schemes": [
+            "v1",
+            "v2",
+            "v3"
+          ],
+          "errors": []
+        },
+        "permissions": [
+          {
+            "name": "android.permission.ACCESS_NETWORK_STATE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.FOREGROUND_SERVICE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.FOREGROUND_SERVICE_DATA_SYNC",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.INTERNET",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.POST_NOTIFICATIONS",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.RECEIVE_BOOT_COMPLETED",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.SYSTEM_ALERT_WINDOW",
+            "category": "sensitive",
+            "description_en": "Requests permission to draw over other applications.",
+            "description_hi": "अन्य ऐप्स के ऊपर दिखाने की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.WAKE_LOCK",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.WRITE_EXTERNAL_STORAGE",
+            "category": "sensitive",
+            "description_en": "Requests shared-storage writes; actual scope depends on Android version.",
+            "description_hi": "साझा स्टोरेज में लिखने की अनुमति माँगता है; दायरा एंड्रॉयड संस्करण पर निर्भर है।"
+          },
+          {
+            "name": "org.schabi.newpipe.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          }
+        ],
+        "findings": [
+          {
+            "id": "sensitive-permissions",
+            "severity": "review",
+            "title_en": "Sensitive capabilities requested",
+            "title_hi": "संवेदनशील क्षमताएँ माँगी गई हैं",
+            "evidence": [
+              "android.permission.SYSTEM_ALERT_WINDOW",
+              "android.permission.WRITE_EXTERNAL_STORAGE"
+            ],
+            "explanation_en": "Check whether these permissions are necessary for the app's purpose. A declaration is not evidence that access was granted or abused.",
+            "explanation_hi": "जाँचें कि ये अनुमतियाँ ऐप के काम के लिए ज़रूरी हैं या नहीं। घोषणा से यह साबित नहीं होता कि पहुँच मिली या उसका दुरुपयोग हुआ।"
+          }
+        ],
+        "coverage": {
+          "manifest": true,
+          "signature": true,
+          "dex": false,
+          "notes": [
+            "Static inspection only; the APK was not installed or executed.",
+            "Declared permissions are capabilities, not observed grants or behavior.",
+            "DEX behavior, remote code, network security resources, and signer rotation lineage are not assessed.",
+            "No findings does not establish that an app is safe."
+          ]
+        },
+        "analyzed_at": "2026-10-11T13:50:39.139624+00:00"
+      }
+    },
+    {
+      "id": "insecurebank",
+      "name": "InsecureBankv2",
+      "classification": "intentionally-insecure-training-app",
+      "release": "repository commit 3c8cc3a",
+      "license": "MIT",
+      "source_url": "https://github.com/dineshshetty/Android-InsecureBankv2/tree/3c8cc3a3ce45ed56d0f58f236b541b41f992e51f",
+      "license_url": "https://github.com/dineshshetty/Android-InsecureBankv2/blob/master/LICENSE",
+      "download_url": "https://raw.githubusercontent.com/dineshshetty/Android-InsecureBankv2/3c8cc3a3ce45ed56d0f58f236b541b41f992e51f/InsecureBankv2.apk",
+      "ground_truth_note": "Author describes this as an intentionally vulnerable training app. It is not classified as malware or a scam.",
+      "report": {
+        "schema_version": 1,
+        "apk_sha256": "b18af2a0e44d7634bbcdf93664d9c78a2695e050393fcfbb5e8b91f902d194a4",
+        "file_size": 3462429,
+        "package_name": "com.android.insecurebankv2",
+        "version_name": "1.0",
+        "version_code": 1,
+        "app_name": "InsecureBankv2",
+        "signature": {
+          "status": "verified",
+          "signer_sha256": [
+            "8092db81ae717486631a1534977def465ee112903e1553d38d41df8abd57a375"
+          ],
+          "schemes": [
+            "v1"
+          ],
+          "errors": []
+        },
+        "permissions": [
+          {
+            "name": "android.permission.ACCESS_COARSE_LOCATION",
+            "category": "sensitive",
+            "description_en": "Requests approximate location access.",
+            "description_hi": "अनुमानित स्थान तक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.ACCESS_NETWORK_STATE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.GET_ACCOUNTS",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.INTERNET",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.READ_CALL_LOG",
+            "category": "sensitive",
+            "description_en": "Requests access to call history.",
+            "description_hi": "कॉल इतिहास तक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.READ_CONTACTS",
+            "category": "sensitive",
+            "description_en": "Requests access to contacts.",
+            "description_hi": "संपर्कों तक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.READ_EXTERNAL_STORAGE",
+            "category": "sensitive",
+            "description_en": "Requests access to shared files; actual scope depends on Android version.",
+            "description_hi": "साझा फ़ाइलों तक पहुँच माँगता है; वास्तविक दायरा एंड्रॉयड संस्करण पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.READ_PHONE_STATE",
+            "category": "sensitive",
+            "description_en": "Requests access to phone state and related device information.",
+            "description_hi": "फ़ोन की स्थिति और संबंधित जानकारी तक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.READ_PROFILE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.SEND_SMS",
+            "category": "sensitive",
+            "description_en": "Requests permission to send SMS messages.",
+            "description_hi": "एसएमएस संदेश भेजने की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.USE_CREDENTIALS",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.WRITE_EXTERNAL_STORAGE",
+            "category": "sensitive",
+            "description_en": "Requests shared-storage writes; actual scope depends on Android version.",
+            "description_hi": "साझा स्टोरेज में लिखने की अनुमति माँगता है; दायरा एंड्रॉयड संस्करण पर निर्भर है।"
+          }
+        ],
+        "findings": [
+          {
+            "id": "sensitive-permissions",
+            "severity": "review",
+            "title_en": "Sensitive capabilities requested",
+            "title_hi": "संवेदनशील क्षमताएँ माँगी गई हैं",
+            "evidence": [
+              "android.permission.ACCESS_COARSE_LOCATION",
+              "android.permission.READ_CALL_LOG",
+              "android.permission.READ_CONTACTS",
+              "android.permission.READ_EXTERNAL_STORAGE",
+              "android.permission.READ_PHONE_STATE",
+              "android.permission.SEND_SMS",
+              "android.permission.WRITE_EXTERNAL_STORAGE"
+            ],
+            "explanation_en": "Check whether these permissions are necessary for the app's purpose. A declaration is not evidence that access was granted or abused.",
+            "explanation_hi": "जाँचें कि ये अनुमतियाँ ऐप के काम के लिए ज़रूरी हैं या नहीं। घोषणा से यह साबित नहीं होता कि पहुँच मिली या उसका दुरुपयोग हुआ।"
+          },
+          {
+            "id": "debuggable",
+            "severity": "review",
+            "title_en": "Debugging is enabled",
+            "title_hi": "डिबगिंग चालू है",
+            "evidence": [
+              "android:debuggable=true"
+            ],
+            "explanation_en": "This build permits debugging. That can be expected for a training or development app, but deserves review in a production release.",
+            "explanation_hi": "यह बिल्ड डिबगिंग की अनुमति देता है। प्रशिक्षण ऐप में यह अपेक्षित है, लेकिन प्रोडक्शन रिलीज़ में समीक्षा ज़रूरी है।"
+          },
+          {
+            "id": "legacy-target",
+            "severity": "review",
+            "title_en": "Older Android protections targeted",
+            "title_hi": "पुरानी एंड्रॉयड सुरक्षा लक्षित है",
+            "evidence": [
+              "targetSdkVersion=22"
+            ],
+            "explanation_en": "An older target SDK can retain legacy platform behavior. This is a compatibility indicator, not proof of harmful activity.",
+            "explanation_hi": "पुराने टारगेट एसडीके से पुराना प्लेटफ़ॉर्म व्यवहार रह सकता है। यह संगतता संकेत है, हानिकारक गतिविधि का प्रमाण नहीं।"
+          }
+        ],
+        "coverage": {
+          "manifest": true,
+          "signature": true,
+          "dex": false,
+          "notes": [
+            "Static inspection only; the APK was not installed or executed.",
+            "Declared permissions are capabilities, not observed grants or behavior.",
+            "DEX behavior, remote code, network security resources, and signer rotation lineage are not assessed.",
+            "No findings does not establish that an app is safe."
+          ]
+        },
+        "analyzed_at": "2026-10-11T13:50:39.692399+00:00"
+      }
+    },
+    {
+      "id": "pivaa",
+      "name": "PIVAA",
+      "classification": "intentionally-insecure-training-app",
+      "release": "repository commit 7fde895",
+      "license": "GPL-3.0",
+      "source_url": "https://github.com/HTBridge/pivaa/tree/7fde8956083ec4c6023c75f013f72023d60eda12",
+      "license_url": "https://github.com/HTBridge/pivaa/blob/master/LICENSE",
+      "download_url": "https://raw.githubusercontent.com/HTBridge/pivaa/7fde8956083ec4c6023c75f013f72023d60eda12/apks/pivaa.apk",
+      "ground_truth_note": "Author describes this as an intentionally vulnerable training app. It is not classified as malware or a scam.",
+      "report": {
+        "schema_version": 1,
+        "apk_sha256": "57887e1d1e119939eec0e929801b049f8037cf90d2accab479a48f0d4dd2c19a",
+        "file_size": 3166140,
+        "package_name": "com.htbridge.pivaa",
+        "version_name": "1.0",
+        "version_code": 1,
+        "app_name": "PIVAA",
+        "signature": {
+          "status": "verified",
+          "signer_sha256": [
+            "918b23e3bf7c966db1906bd25d0deaeb42ed8ef76ad609a79c90c7f59ac8dcfd"
+          ],
+          "schemes": [
+            "v1",
+            "v2"
+          ],
+          "errors": []
+        },
+        "permissions": [
+          {
+            "name": "android.permission.ACCESS_COARSE_LOCATION",
+            "category": "sensitive",
+            "description_en": "Requests approximate location access.",
+            "description_hi": "अनुमानित स्थान तक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.ACCESS_FINE_LOCATION",
+            "category": "sensitive",
+            "description_en": "Requests precise location access.",
+            "description_hi": "सटीक स्थान तक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.CALL_PHONE",
+            "category": "sensitive",
+            "description_en": "Requests permission to initiate phone calls.",
+            "description_hi": "फ़ोन कॉल शुरू करने की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.CAMERA",
+            "category": "sensitive",
+            "description_en": "Requests camera access.",
+            "description_hi": "कैमरे तक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.GET_ACCOUNTS",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.INTERNET",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.NFC",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.READ_CONTACTS",
+            "category": "sensitive",
+            "description_en": "Requests access to contacts.",
+            "description_hi": "संपर्कों तक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.READ_EXTERNAL_STORAGE",
+            "category": "sensitive",
+            "description_en": "Requests access to shared files; actual scope depends on Android version.",
+            "description_hi": "साझा फ़ाइलों तक पहुँच माँगता है; वास्तविक दायरा एंड्रॉयड संस्करण पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.READ_PROFILE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.RECORD_AUDIO",
+            "category": "sensitive",
+            "description_en": "Requests microphone access.",
+            "description_hi": "माइक्रोफ़ोन तक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.WRITE_EXTERNAL_STORAGE",
+            "category": "sensitive",
+            "description_en": "Requests shared-storage writes; actual scope depends on Android version.",
+            "description_hi": "साझा स्टोरेज में लिखने की अनुमति माँगता है; दायरा एंड्रॉयड संस्करण पर निर्भर है।"
+          }
+        ],
+        "findings": [
+          {
+            "id": "sensitive-permissions",
+            "severity": "review",
+            "title_en": "Sensitive capabilities requested",
+            "title_hi": "संवेदनशील क्षमताएँ माँगी गई हैं",
+            "evidence": [
+              "android.permission.ACCESS_COARSE_LOCATION",
+              "android.permission.ACCESS_FINE_LOCATION",
+              "android.permission.CALL_PHONE",
+              "android.permission.CAMERA",
+              "android.permission.READ_CONTACTS",
+              "android.permission.READ_EXTERNAL_STORAGE",
+              "android.permission.RECORD_AUDIO",
+              "android.permission.WRITE_EXTERNAL_STORAGE"
+            ],
+            "explanation_en": "Check whether these permissions are necessary for the app's purpose. A declaration is not evidence that access was granted or abused.",
+            "explanation_hi": "जाँचें कि ये अनुमतियाँ ऐप के काम के लिए ज़रूरी हैं या नहीं। घोषणा से यह साबित नहीं होता कि पहुँच मिली या उसका दुरुपयोग हुआ।"
+          },
+          {
+            "id": "debuggable",
+            "severity": "review",
+            "title_en": "Debugging is enabled",
+            "title_hi": "डिबगिंग चालू है",
+            "evidence": [
+              "android:debuggable=true"
+            ],
+            "explanation_en": "This build permits debugging. That can be expected for a training or development app, but deserves review in a production release.",
+            "explanation_hi": "यह बिल्ड डिबगिंग की अनुमति देता है। प्रशिक्षण ऐप में यह अपेक्षित है, लेकिन प्रोडक्शन रिलीज़ में समीक्षा ज़रूरी है।"
+          },
+          {
+            "id": "legacy-target",
+            "severity": "review",
+            "title_en": "Older Android protections targeted",
+            "title_hi": "पुरानी एंड्रॉयड सुरक्षा लक्षित है",
+            "evidence": [
+              "targetSdkVersion=26"
+            ],
+            "explanation_en": "An older target SDK can retain legacy platform behavior. This is a compatibility indicator, not proof of harmful activity.",
+            "explanation_hi": "पुराने टारगेट एसडीके से पुराना प्लेटफ़ॉर्म व्यवहार रह सकता है। यह संगतता संकेत है, हानिकारक गतिविधि का प्रमाण नहीं।"
+          }
+        ],
+        "coverage": {
+          "manifest": true,
+          "signature": true,
+          "dex": false,
+          "notes": [
+            "Static inspection only; the APK was not installed or executed.",
+            "Declared permissions are capabilities, not observed grants or behavior.",
+            "DEX behavior, remote code, network security resources, and signer rotation lineage are not assessed.",
+            "No findings does not establish that an app is safe."
+          ]
+        },
+        "analyzed_at": "2026-10-11T13:50:40.191426+00:00"
+      }
+    }
+  ]
+}
