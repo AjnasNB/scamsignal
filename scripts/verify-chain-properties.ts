@@ -29,12 +29,21 @@ async function main() {
   const reviewer = role('reviewer');
   const observer = role('observer');
   const policy = JSON.parse(await fs.readFile('apps/web/public/data/trust-policy.json', 'utf8'));
-  configureArkiv(policy);
+  configureArkiv({...policy, rpc_url: process.env.SCAMSIGNAL_READ_RPC_URL || policy.rpc_url});
+  let accessKey: string | undefined;
+  if (process.env.SCAMSIGNAL_ARKIV_KEY_FILE) {
+    const accessPath = await fs.realpath(process.env.SCAMSIGNAL_ARKIV_KEY_FILE);
+    const accessRelative = path.relative(root, accessPath);
+    if (accessRelative === '' || (!accessRelative.startsWith('..' + path.sep) && !path.isAbsolute(accessRelative))) throw new Error('RPC key files must stay outside the repository.');
+    accessKey = (await fs.readFile(accessPath, 'utf8')).trim();
+    if (!accessKey || /[\r\n]/.test(accessKey)) throw new Error('Operator RPC key file is invalid.');
+  }
+  const operatorTransport = () => http(RPC_URL, {timeout: 18000, retryCount: 0, ...(accessKey ? {fetchOptions: {headers: {'X-API-KEY': accessKey}}} : {})});
   if (!policy.trusted_creators.some((value: string) => value.toLowerCase() === reviewer.address.toLowerCase())) throw new Error('Reviewer policy does not approve the signing wallet.');
   if (policy.trusted_creators.some((value: string) => value.toLowerCase() === observer.address.toLowerCase())) throw new Error('Observer must be outside the accepted reviewer policy.');
-  const publicClient = createPublicClient({chain: tiramisu, transport: http(RPC_URL, {timeout: 18000, retryCount: 1})});
-  const reviewerClient = createWalletClient({chain: tiramisu, account: reviewer, transport: http(RPC_URL)});
-  const observerClient = createWalletClient({chain: tiramisu, account: observer, transport: http(RPC_URL)});
+  const publicClient = createPublicClient({chain: tiramisu, transport: operatorTransport()});
+  const reviewerClient = createWalletClient({chain: tiramisu, account: reviewer, transport: operatorTransport()});
+  const observerClient = createWalletClient({chain: tiramisu, account: observer, transport: operatorTransport()});
   const run = randomUUID();
   const output: any = {
     schema_version: 1, network: 'Arkiv Tiramisu', chain_id: tiramisu.id, started_at: new Date().toISOString(),

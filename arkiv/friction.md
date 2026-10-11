@@ -1,33 +1,55 @@
 # Arkiv integration friction
 
-Environment: Windows, Node.js 24.15.0, React/TypeScript browser client, `@arkiv-network/sdk` **0.8.1**, Tiramisu chain **7738577**. Integration date: **11 October 2026**.
+Measured on 11 October 2026: Windows, Node.js 24.15.0, React/TypeScript, `@arkiv-network/sdk` **0.8.1**, viem **2.57.4**, Tiramisu chain **7738577**. Production reads use Wrangler **4.149.0** and Workers compatibility date **2026-10-11**. Credentials, wallet secrets, browser sessions, and private uploads are excluded.
 
-## Typed indexes need to be explicit
+## TypeScript SDK and typed query indexes
 
-APK hashes and package digests use `bytes32`; schema/version/expiry use `u64`; creator filters use `addr`. Querying these as untyped JSON strings or numbers does not express the same typed index. Our code imports constructors from `@arkiv-network/sdk/attr`, and exact queries and real transaction keys are in [schema.md](schema.md) and [evidence.json](evidence.json).
+**Expected:** artifact hashes, package digests, creator policy, and lifetimes could be combined in one typed query. **Observed:** constructors must be explicit: `bytes32` for hashes, `u64` for schema/version/expiry, and `addr` for protocol creator. Untyped JSON-looking strings and numbers are not equivalent. Our reader consumes pagination and checks strict payload/index agreement.
 
-Reproduce: run `npm run arkiv:verify`; inspect `live_query` in its output file. Then compare a hash query constructed with `bytes32` to one constructed with `str`. Suggested documentation improvement: a compact cookbook showing mixed typed user attributes and `$creator`/`$expiresAt` filters together.
+**Reproduce:** `npm ci` then `npm run arkiv:verify`. Inspect `live_query` in [verification.json](verification.json), and the constructors in [schema.md](schema.md) and [client source](../packages/arkiv-client/src/index.ts). The fresh read-back at block 440003 accepted all 19 published records and twelve artifact identities. **Improvement:** a mixed-type cookbook combining user attributes with `$creator` and `$expiresAt` would reduce first-query mistakes.
 
-## Creator and owner have distinct security meanings
+## Creator, ownership, and readonly payloads
 
-Applications must verify protocol creator metadata rather than accepting an `issuer` field in their own payload. A mutable entity can retain its original creator after transfer while a later owner changes it. Our reader therefore accepts only readonly payloads and binds index values to strict payload fields. It does not require owner equality for readonly records because transfer cannot change their payload.
+**Expected:** a trusted creator filter would establish who authored accepted data. **Observed:** creator and current owner are different properties. A mutable transferred entity can retain a trusted creator while its later owner changes the payload. We require readonly records, protocol creator metadata, exact artifact binding, and strict attribute/payload consistency. A publisher name in JSON proves nothing.
 
-Reproduce: `npm test` exercises a trusted creator's mutable entity with an untrusted owner and rejects it. Suggested improvement: include this transferred-mutable-record threat in provenance examples, alongside the difference between creator and owner.
+**Reproduce:** `npm test` checks forged authorship, mutable transferred records, wrong typed attributes, incomplete signer sets, and same-author correction ordering. [protocol-verification.json](protocol-verification.json) separately records a real unapproved-wallet fixture rejected by policy. **Improvement:** put the transferred-mutable-record threat beside creator/owner examples. The client trusts its RPC provider for protocol metadata; it does not independently verify a state proof.
 
-## Expiry is a live-query condition
+## WebSocket events and clock-driven expiry
 
-`getBlockTiming()` returns a block number, Unix timestamp in seconds, and duration in seconds. We filter `$expiresAt` and derive an approximate display time from the current timing. Event notifications are useful for writes, but the application still needs periodic refresh to remove expired records. Expiry is not a promise of historical deletion.
+**Expected:** events would keep the viewer current without excess HTTP traffic. **Observed:** shared-chain events include other applications' activity. Refreshing on every event consumed quota unnecessarily. Expiry also needs clock-driven reads; it is not treated as an entity-write event. `getBlockTiming()` provides block number, Unix seconds, and duration for approximate expiry display.
 
-Reproduce: [protocol-verification.json](protocol-verification.json), when present, records the separate synthetic short-life fixture and actual live-query expiration result. Main review records remain long-lived; the expiry demonstration never shortens their lives. Suggested improvement: show an explicit clock-driven refresh pattern beside WebSocket examples.
+**Resolution:** filter events to approved creator/owner addresses or accepted entity keys; throttle relevant refreshes to a 15-second cooldown; poll every 60 seconds. Filter `$expiresAt > currentBlock` on every live query. An outage remains unavailable, not clear of warnings.
 
-## Reviewer setup requires a funded testnet wallet
+**Reproduce:** `npm test` includes unrelated-event and transport cases; `npm run test:e2e` exercises bursts, expiry, and stalled-query recovery with controlled fixtures. Actual short-life expiry and retraction transactions are in [protocol-verification.json](protocol-verification.json). Main records cover judging; experiments use separate synthetic records. **Improvement:** document relevant-event filtering, cooldown, and periodic expiry together.
 
-Anonymous public reads worked without an access key. Writes required a dedicated reviewer wallet, free Tiramisu testnet GLM, and the correct chain ID. The Arkiv Hub faucet required its CAP proof-of-work/browser check and then returned an asynchronous accepted claim. We verified the delivered balance before creating any entities. No paid token purchase was required.
+## Direct JSON-RPC, anonymous quota, and access keys
 
-Suggested improvement: document the faucet's asynchronous claim states and expected funding sequence alongside the first entity-write example. This report includes no CAPTCHA/session cookies, access credentials or private wallet material.
+**Expected:** anonymous reads would support a small public demo, and an 18-second request timeout would bound loading. **Observed:** live queries eventually returned HTTP 429 with `ANON_COST_LIMITED`. viem honored a long `Retry-After` between automatic attempts, leaving the UI loading for minutes despite the per-request timeout. This was an actual browser failure.
 
-## Direct reading is intentionally independent
+**Resolution:** HTTP `retryCount: 0`, an 18-second request timeout, a 30-second viewer deadline, explicit unavailable state, and a restricted same-origin Cloudflare gateway with a server-only Hub access key. It accepts only timing and scoped query methods; it bounds namespace, creators, payload sizes, time, pagination, and rate. Public viewers never receive the credential. Independent clients can use their own Arkiv provider. Browser traffic remains independent of the APK scan API.
 
-The scanner runs on a free Azure F1 host; the frontend and independent viewer run on Cloudflare static hosting. The browser queries Arkiv directly. A scanner outage cannot be treated as a missing warning, and a failed Arkiv lookup cannot be treated as a clean result. Our integration contains explicit unavailable and unknown states and bounded pagination.
+**Reproduce:** `npm test` asserts that a 429 with a long `Retry-After` fails promptly and that unscoped/write requests are rejected. `npm run arkiv:verify` reads the live public gateway by default. For local keyed reads, store your own key in ignored `.dev.vars`, then run `npx wrangler dev --local --port 8787`; see [worker README](../worker/README.md). Keep keys out of URLs and `VITE_*` variables. **Improvement:** include the anonymous-quota-to-key path, `X-API-KEY` header, fail-fast retry, and bounded viewer in the first-entity cookbook.
 
-Reproduce: the browser fault tests in `tests/web` deliberately fail the scan/API or record connection. Actual five-upload hosted measurements are in `scanner/live-evaluation.json`; these are distinct from mocked UI tests. Actual Arkiv read-back is in `arkiv/verification.json`.
+## Hub and free Faucet setup
+
+**Expected:** a testnet reviewer could obtain free write gas before publishing. **Observed:** the Hub faucet required its browser CAPTCHA/proof check and returned an asynchronous accepted claim. We checked delivery before publishing. The approved reviewer received free Tiramisu GLM; the separate unapproved test wallet received a small test-only transfer. No paid token purchase was required.
+
+**Reproduce:** connect your own test wallet to [Arkiv Hub](https://hub.arkiv.network), choose Tiramisu, request the free faucet, and verify balance before creating an entity. Supply a private wallet file outside the checkout to operator scripts. Actual receipts are in [evidence.json](evidence.json). **Improvement:** document accepted/pending/funded states and chain ID next to the first write example.
+
+## Hub access-key onboarding
+
+**Expected:** the logged-in account could create a free read-quota key. **Observed:** it initially had no Tiramisu key. Creation required a separate authorized CAPTCHA. The Copy button silently failed while Chrome was in the background; a foreground user copy completed transfer. The key stays outside the checkout and in a Cloudflare secret.
+
+**Reproduce:** generate a Tiramisu key in your own Hub account, verify foreground copying, and configure the server-side `X-API-KEY` header. **Improvement:** show explicit copy-success/failure instead of silently swallowing clipboard errors; distinguish wallet funding from API quota.
+
+## Docs and Block Explorer
+
+**Expected:** SDK docs and transaction links would make judging reproducible. **Observed:** these surfaces worked; no distinct explorer failure was observed. Docs clarified typed attributes, readonly flags, timing, and events. Every published transaction has an explorer link in [evidence.json](evidence.json); protocol experiments have separate receipts.
+
+**Reproduce:** follow `tx_url`; compare entity key, creator wallet, expiry block, and readonly properties with `npm run arkiv:verify`. **Improvement:** link a complete creator-filtered, expiring application example to source and receipts, including quota/retry behavior.
+
+## Validation boundaries
+
+[scanner/live-evaluation.json](../scanner/live-evaluation.json) records twelve real uploads, exact hash agreement, signatures, private-job authorization, deletion, and CORS. [verification.json](verification.json) records fresh Arkiv reads and optional direct entity audits. Controlled browser fixtures do not substitute for either live measurement. Five historical malware specimens span three documented campaigns and establish no detection-accuracy or current India-threat claim.
+
+Surfaces used: SDK, direct JSON-RPC, WebSocket events, Docs, Hub, Faucet, Access keys, Block Explorer. No Arkiv Data Explorer, Arkiv MCP, Arkiv skills, or Arkiv plugin was used. Devfolio's separate MCP connection is not an Arkiv surface.

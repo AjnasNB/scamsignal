@@ -5,6 +5,9 @@ import { eq, gt, or, type Expression } from '@arkiv-network/sdk/query';
 import { custom, http, webSocket, sha256, stringToHex, type Hex } from 'viem';
 import { z } from 'zod';
 
+// Avoid Zod's dynamic-code feature probe under the site's strict script policy.
+z.config({ jitless: true });
+
 export const APP_ID = 'scamsignal-v1';
 export const RPC_URL = 'https://rpc.tiramisu.db-chain.testnet.arkiv.network';
 export const WS_URL = 'wss://rpc.tiramisu.db-chain.testnet.arkiv.network';
@@ -22,7 +25,7 @@ export const recordPayloadSchema = z.object({
   title: z.string().max(180), summary: z.string().max(3000),
   evidence: z.array(z.string().max(400)).max(30),
   severity: z.enum(['info', 'review', 'high']),
-  classification: z.enum(['open_source_release', 'insecure_training_app', 'synthetic_demo']),
+  classification: z.enum(['open_source_release', 'documented_malware_sample', 'insecure_training_app', 'synthetic_demo']),
   reference_url: z.url().max(1200),
   target_key: keySchema.optional(), action: z.literal('retract').optional(),
 }).strict();
@@ -42,6 +45,7 @@ export interface ReportIdentity {
 }
 export interface ArkivConfiguration {
   trusted_creators: string[]; rpc_url?: string; ws_url?: string;
+  browser_rpc_url?: string;
   reviewer_labels?: Record<string,string>;
 }
 export interface ArkivResolution {
@@ -51,9 +55,11 @@ export interface ArkivResolution {
 }
 let configuration: ArkivConfiguration = {trusted_creators:[]};
 let initialized = false;
+const observedRecordKeys = new Set<string>();
 export function configureArkiv(config: ArkivConfiguration) {
   const creators = z.array(walletSchema).max(20).parse(config.trusted_creators);
   configuration = {...config, trusted_creators:[...new Set(creators.map(a=>a.toLowerCase()))]};
+  observedRecordKeys.clear();
   initialized = true;
 }
 export function getArkivConfiguration(): ArkivConfiguration { return {...configuration, trusted_creators:[...configuration.trusted_creators]}; }
@@ -64,7 +70,13 @@ async function ensureConfiguration() {
   if (!response.ok) throw new Error('Reviewer policy could not be loaded.');
   configureArkiv(await response.json());
 }
-function publicClient() { return createPublicClient({chain:tiramisu, transport:http(configuration.rpc_url || RPC_URL,{timeout:18000,retryCount:1})}); }
+// Retry-After can be hours on an exhausted RPC quota. Surface the failure instead
+// of allowing transport retries to keep the consumer waiting indefinitely.
+function publicClient() {
+  const endpoint = typeof window !== 'undefined' && configuration.browser_rpc_url
+    ? configuration.browser_rpc_url : configuration.rpc_url || RPC_URL;
+  return createPublicClient({chain:tiramisu, transport:http(endpoint,{timeout:18000,retryCount:0})});
+}
 export function isTrustedCreator(creator: string, policy = configuration): boolean {
   return policy.trusted_creators.some(a=>a.toLowerCase() === creator.toLowerCase());
 }
@@ -117,7 +129,11 @@ async function queryRecords(extra:Expression[] = []) {
   while (true) {
     for (const entity of page.entities) {
       const record=decodePublicRecord(entity,timing);
-      if (record) records.push(record); else ignored++;
+      if (record) {
+        records.push(record);
+        if (observedRecordKeys.size >= 2000) observedRecordKeys.delete(observedRecordKeys.values().next().value!);
+        observedRecordKeys.add(record.key.toLowerCase());
+      } else ignored++;
     }
     if (!page.hasNextPage()) break;
     if (++pages >= 10) throw new Error('The record feed is too large to verify completely. Narrow your query.');
@@ -204,19 +220,26 @@ export async function connectReviewer():Promise<string> {
 export async function publishRecord(input:PublishInput) {
   const account=await connectReviewer();
   if (input.kind==='correction') {
-    const target=await publicClient().getEntity(input.target_key as Hex);
-    if (!target?.creator || target.creator.toLowerCase()!==account.toLowerCase()) throw new Error('Only the original reviewer can correct this record.');
-    const timing=await publicClient().getBlockTiming();
-    const verified=decodePublicRecord(target,timing);
+    const targetRecords=await queryRecords([eq('$key',entityKey(input.target_key as Hex))]);
+    const verified=targetRecords.records.find(record=>record.key.toLowerCase()===input.target_key?.toLowerCase());
+    if (!verified || verified.creator.toLowerCase()!==account.toLowerCase()) throw new Error('Only the original reviewer can correct a live verified record.');
     if (!verified || verified.kind==='correction' || verified.apk_sha256!==input.apk_sha256 || verified.package_name!==input.package_name) throw new Error('The correction must identify the original artifact and a verified passport or advisory.');
-    const minimumDays=Math.ceil(Number(target.expiresAt-timing.currentBlock)*timing.blockDuration/86400)+1;
+    const minimumDays=Math.ceil((Date.parse(verified.expires_at)-Date.now())/86400000)+1;
     input={...input,expires_days:Math.max(input.expires_days||30,minimumDays)};
   }
   const wallet=createWalletClient({chain:tiramisu,transport:custom((globalThis as any).ethereum),account:account as Hex});
   const result=await wallet.createEntity(await buildEntityInput(input));
   return {entity_key:result.entityKey,tx_hash:result.txHash,entityKey:result.entityKey,txHash:result.txHash};
 }
+export function isRelevantRecordEvent(event:{entityKey:string;owner?:string;previousOwner?:string;newOwner?:string}, knownKeys:ReadonlySet<string> = observedRecordKeys):boolean {
+  return knownKeys.has(event.entityKey.toLowerCase()) ||
+    [event.owner,event.previousOwner,event.newOwner].some(owner=>!!owner && isTrustedCreator(owner));
+}
 export function watchRecords(onChange:()=>void,onError?:(error:Error)=>void):()=>void {
   const client=createPublicClient({chain:tiramisu,transport:webSocket(configuration.ws_url || WS_URL)});
-  return client.watchEntityEvents({onEvent:()=>onChange(),onError});
+  return client.watchEntityEvents({onEvent:event=>{
+    // The shared chain contains other applications. Only trusted reviewers or
+    // records already verified by this client invalidate our current result.
+    if (isRelevantRecordEvent(event)) onChange();
+  },onError});
 }

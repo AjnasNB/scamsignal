@@ -1532,7 +1532,7 @@ pre {
   gap: 10px;
   margin-bottom: 18px;
   color: var(--muted);
-  font-size: .65rem;
+  font-size: 0.65rem;
 }
 .stream-notice {
   color: var(--amber-ink);
@@ -2586,5 +2586,566 @@ pre {
   }
   .progress-symbol svg {
     opacity: 0.7;
+  }
+}
+
+/* A quiet, focused entry point: the file check is the primary action. */
+.intro {
+  display: block;
+  max-width: 780px;
+  text-align: center;
+  padding-block: 66px 42px;
+}
+.intro-copy {
+  max-width: none;
+}
+.location-note,
+.intro-assurances {
+  justify-content: center;
+}
+.intro h1 {
+  font-size: clamp(2.7rem, 5vw, 4.25rem);
+  line-height: 1.07;
+  letter-spacing: -0.045em;
+}
+.intro-copy > p {
+  max-width: 510px;
+  margin: 22px auto 0;
+  font-size: 0.98rem;
+}
+.intro-assurances {
+  margin-top: 21px;
+}
+.scan-layout {
+  max-width: 840px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 46px;
+}
+.scan-workspace {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+}
+.workspace-heading {
+  margin-bottom: 17px;
+}
+.workspace-heading h2 {
+  font-size: 1.1rem;
+}
+.upload-zone {
+  min-height: 245px;
+  border-radius: 10px;
+}
+.understand-panel {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  padding-top: 0;
+}
+.understand-panel > h2 {
+  grid-column: 1 / -1;
+  font-size: 1.05rem;
+  margin: 0;
+}
+.explanation-row {
+  gap: 11px;
+  margin: 0;
+}
+.explanation-row > svg {
+  width: 19px;
+}
+.explanation-row h3 {
+  font-size: 0.82rem;
+}
+.explanation-row p {
+  font-size: 0.74rem;
+  line-height: 1.75;
+}
+.understand-panel .important-note {
+  grid-column: 1 / -1;
+  padding-top: 20px;
+  margin: 0;
+}
+.evaluation-section {
+  margin-top: 72px;
+  border-top: 1px solid var(--line);
+  padding-top: 52px;
+}
+.eyebrow {
+  font-size: 0.63rem;
+  font-weight: 650;
+  letter-spacing: 0.11em;
+  color: var(--primary);
+}
+.evaluation-intro h2 {
+  font-size: clamp(1.55rem, 3vw, 2.05rem);
+  margin-top: 10px;
+  letter-spacing: -0.03em;
+}
+.evaluation-intro > p {
+  max-width: 70ch;
+  color: var(--muted);
+  font-size: 0.86rem;
+  margin-top: 10px;
+}
+.evaluation-totals {
+  display: flex;
+  gap: 40px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+.evaluation-totals > span {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+.evaluation-totals strong {
+  font-size: 1.8rem;
+  letter-spacing: -0.045em;
+  font-weight: 600;
+  color: var(--ink);
+}
+.evaluation-context {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  max-width: 105ch;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.8;
+}
+.evaluation-context > svg {
+  flex: 0 0 16px;
+  margin-top: 2px;
+}
+.evaluation-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin: 28px 0 16px;
+}
+.evaluation-filters {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.evaluation-filters button {
+  border: 0;
+  padding: 9px 12px;
+  font-size: 0.71rem;
+  background: transparent;
+  color: var(--muted);
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  min-height: 40px;
+}
+.evaluation-filters button[aria-pressed="true"] {
+  background: var(--surface-strong);
+  color: var(--primary);
+  font-weight: 650;
+}
+.evaluation-filters button:hover {
+  background: var(--surface);
+}
+.evaluation-filters button > span {
+  opacity: 0.75;
+  font-size: 0.62rem;
+}
+.evidence-check {
+  padding: 9px 12px;
+  font-size: 0.7rem;
+}
+.evaluation-freshness {
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.evaluation-freshness.lookup-failed {
+  color: var(--amber-ink);
+}
+.evaluation-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.evaluation-table thead th {
+  font-size: 0.65rem;
+  color: var(--muted);
+  font-weight: 550;
+  padding: 12px 13px;
+  background: var(--surface);
+}
+.evaluation-table th:first-child,
+.evaluation-table td:first-child {
+  padding-left: 16px;
+}
+.evaluation-table tbody th,
+.evaluation-table tbody td {
+  padding: 20px 13px;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+.evaluation-table tbody th {
+  font-weight: 450;
+  width: 30%;
+}
+.evaluation-app > strong {
+  display: block;
+  font-size: 0.83rem;
+  line-height: 1.5;
+}
+.sample-class {
+  font-size: 0.59rem;
+  color: var(--muted);
+  display: inline-block;
+  margin-top: 6px;
+}
+.sample-class.malware {
+  color: var(--red-ink);
+}
+.sample-class.training {
+  color: var(--amber-ink);
+}
+.sample-family {
+  margin-left: 10px;
+  font-size: 0.61rem;
+  color: var(--muted);
+}
+.sample-provenance {
+  margin-top: 9px;
+  max-width: 36ch;
+  font-size: 0.63rem;
+}
+.sample-provenance > summary {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  color: var(--primary);
+  cursor: pointer;
+  list-style: none;
+}
+.sample-provenance > summary::-webkit-details-marker {
+  display: none;
+}
+.sample-provenance > p {
+  margin-top: 10px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.sample-provenance > a {
+  margin-top: 9px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  color: var(--primary);
+}
+.sample-provenance > a:hover {
+  text-decoration: underline;
+}
+.sample-provenance > code {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  margin-top: 12px;
+  font-size: 0.58rem;
+}
+.matrix-value {
+  font-size: 0.71rem;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  line-height: 1.6;
+}
+.matrix-value > svg {
+  flex: 0 0 14px;
+  color: var(--primary);
+}
+.matrix-warning-count {
+  display: block;
+  font-size: 0.61rem;
+  margin-top: 5px;
+  color: var(--muted);
+}
+.matrix-action .example-button {
+  border: 0;
+  background: transparent;
+  padding: 1px 0 7px;
+  font-size: 0.69rem;
+  color: var(--primary);
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  white-space: nowrap;
+  min-height: 32px;
+}
+.matrix-action .example-button:hover {
+  text-decoration: underline;
+}
+.evaluation-insight {
+  display: flex;
+  gap: 14px;
+  margin-top: 28px;
+  padding: 22px 0;
+}
+.evaluation-insight > svg {
+  flex-shrink: 0;
+  color: var(--primary);
+  margin-top: 2px;
+}
+.evaluation-insight h3 {
+  font-size: 0.85rem;
+}
+.evaluation-insight p {
+  font-size: 0.74rem;
+  color: var(--muted);
+  max-width: 95ch;
+  margin-top: 6px;
+  line-height: 1.8;
+}
+.empty-collection {
+  padding: 25px 16px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+}
+.hero-case {
+  text-align: left;
+  max-width: 580px;
+  margin: 30px auto 0;
+  padding: 19px 21px;
+  border-left: 2px solid var(--primary);
+  background: var(--surface);
+}
+.hero-case p {
+  font-size: 0.77rem;
+  line-height: 1.75;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.hero-case button {
+  font-size: 0.7rem;
+  margin-top: 10px;
+}
+.sample-hash-label {
+  display: block;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 0.59rem;
+}
+.reported-ioc code {
+  display: block;
+  overflow-wrap: anywhere;
+  margin-top: 5px;
+  font-size: 0.59rem;
+}
+.sample-context-banner {
+  display: flex;
+  gap: 11px;
+  margin-bottom: 19px;
+  padding: 15px 17px;
+  background: var(--surface);
+  border-radius: 7px;
+}
+.sample-context-banner > svg {
+  flex: 0 0 17px;
+  color: var(--primary);
+  margin-top: 2px;
+}
+.sample-context-banner strong {
+  font-size: 0.77rem;
+}
+.sample-context-banner p {
+  font-size: 0.71rem;
+  line-height: 1.75;
+  color: var(--muted);
+  max-width: 100ch;
+  margin-top: 5px;
+}
+.sample-context-banner a {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 0.66rem;
+  color: var(--primary);
+}
+.sample-context-banner.documented-threat {
+  background: var(--red-light);
+}
+.sample-context-banner.documented-threat > svg,
+.sample-context-banner.documented-threat strong {
+  color: var(--red-ink);
+}
+@media (max-width: 880px) {
+  .evaluation-table thead th,
+  .evaluation-table tbody th,
+  .evaluation-table tbody td {
+    padding-inline: 9px;
+  }
+  .evaluation-table tbody th {
+    width: 25%;
+  }
+}
+@media (max-width: 680px) {
+  .hero-case {
+    padding: 16px;
+    margin-top: 24px;
+  }
+  .hero-case p {
+    font-size: 0.72rem;
+  }
+  .sample-context-banner {
+    padding: 14px;
+    gap: 9px;
+  }
+  .sample-context-banner strong {
+    font-size: 0.72rem;
+  }
+  .sample-context-banner p {
+    font-size: 0.68rem;
+  }
+  .intro {
+    padding-block: 44px 34px;
+  }
+  .intro h1 {
+    font-size: 2.9rem;
+  }
+  .intro-copy > p {
+    font-size: 0.84rem;
+    max-width: 42ch;
+  }
+  .intro-assurances {
+    gap: 14px;
+    font-size: 0.63rem;
+  }
+  .scan-layout {
+    gap: 35px;
+  }
+  .understand-panel {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+  }
+  .explanation-row h3 {
+    font-size: 0.82rem;
+  }
+  .explanation-row p {
+    font-size: 0.74rem;
+  }
+  .evaluation-section {
+    margin-top: 48px;
+    padding-top: 34px;
+  }
+  .evaluation-intro h2 {
+    font-size: 1.65rem;
+    max-width: 20ch;
+  }
+  .evaluation-intro > p {
+    font-size: 0.77rem;
+  }
+  .evaluation-totals {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    margin-top: 22px;
+  }
+  .evaluation-totals > span {
+    display: block;
+    font-size: 0.64rem;
+    line-height: 1.6;
+  }
+  .evaluation-totals strong {
+    display: block;
+    font-size: 1.7rem;
+  }
+  .evaluation-context {
+    font-size: 0.65rem;
+  }
+  .evaluation-toolbar {
+    gap: 16px;
+    margin-top: 22px;
+  }
+  .evaluation-filters {
+    width: 100%;
+    gap: 5px;
+  }
+  .evaluation-filters button {
+    font-size: 0.64rem;
+    padding: 8px 10px;
+  }
+  .evidence-check {
+    min-height: 42px;
+  }
+  .evaluation-table,
+  .evaluation-table tbody {
+    display: block;
+  }
+  .evaluation-table thead {
+    display: none;
+  }
+  .evaluation-table tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 19px 14px;
+    padding: 24px 0;
+    border-top: 1px solid var(--line);
+  }
+  .evaluation-table tbody th,
+  .evaluation-table tbody td {
+    padding: 0;
+    border: 0;
+    width: auto;
+  }
+  .evaluation-table tbody th:first-child {
+    padding: 0;
+    grid-column: 1 / -1;
+  }
+  .evaluation-app > strong {
+    font-size: 0.95rem;
+  }
+  .sample-class {
+    font-size: 0.65rem;
+    margin-top: 5px;
+  }
+  .sample-provenance {
+    font-size: 0.67rem;
+    max-width: none;
+    margin-top: 9px;
+  }
+  .evaluation-table td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    color: var(--muted);
+    font-size: 0.63rem;
+    margin-bottom: 5px;
+  }
+  .matrix-value {
+    font-size: 0.74rem;
+  }
+  .matrix-warning-count {
+    font-size: 0.61rem;
+  }
+  .matrix-action {
+    grid-column: 1 / -1;
+  }
+  .matrix-action .example-button {
+    font-size: 0.72rem;
+    min-height: 40px;
+  }
+  .evaluation-insight {
+    border-top: 1px solid var(--line);
+    margin-top: 0;
+    gap: 11px;
+  }
+  .evaluation-insight h3 {
+    font-size: 0.82rem;
+  }
+  .evaluation-insight p {
+    font-size: 0.68rem;
   }
 }

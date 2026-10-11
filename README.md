@@ -13,7 +13,7 @@ The consumer flow is free and requires no account or wallet. English and Hindi e
 - [Motion-graphics explainer](https://scamsignal.ajnasnb.com/demo/scamsignal-explainer.mp4)
 - [Presentation](https://scamsignal.ajnasnb.com/demo/scamsignal-app-passport.pptx)
 
-The live scanner has been tested with all five APKs, and fresh Arkiv reads verified all five passports and both reviewed warnings. Evidence is in [`scanner/live-evaluation.json`](scanner/live-evaluation.json), [`arkiv/verification.json`](arkiv/verification.json), and [`arkiv/protocol-verification.json`](arkiv/protocol-verification.json).
+The live scanner has been tested with twelve APKs: five upstream releases, five research-documented malicious specimens, and two training controls. Fresh Arkiv reads verified all twelve passports and seven warnings (19 records). Evidence is in [`scanner/live-evaluation.json`](scanner/live-evaluation.json), [`arkiv/verification.json`](arkiv/verification.json), and [`arkiv/protocol-verification.json`](arkiv/protocol-verification.json).
 
 ## What works
 
@@ -21,10 +21,10 @@ The live scanner has been tested with all five APKs, and fresh Arkiv reads verif
 2. A private server job verifies the Android signature with `apksigner` and reads the binary manifest with Androguard.
 3. The browser checks that the server analyzed the same file.
 4. AppPassport compares exact-file hashes and signing certificates with accepted reviewer records.
-5. The client reads relevant advisories and authorized retractions directly from Arkiv Tiramisu.
+5. The client reads relevant Arkiv Tiramisu advisories and authorized retractions through the public-record gateway.
 6. The report separates file findings, identity comparison, public warnings, and incomplete coverage. It can be downloaded as JSON.
 
-Five measured reports are available as clearly labelled **precomputed examples**. Opening an example still performs a fresh public-record lookup. The `/viewer` route uses an APK hash only, so existing records remain readable when the scan API is unavailable.
+Twelve measured reports are available as clearly labelled **precomputed examples**, grouped by provenance. Opening an example still performs a fresh public-record lookup. The `/viewer` route uses an APK hash only, so existing records remain readable when the scan API is unavailable.
 
 ## Architecture
 
@@ -33,13 +33,16 @@ flowchart LR
     Phone[Phone or desktop browser] --> UI[React + TypeScript UI]
     UI --> API[FastAPI private scan jobs]
     API --> Parser[Androguard + apksigner]
-    UI --> Arkiv[Arkiv Tiramisu]
+    UI --> Gateway[Restricted Cloudflare read gateway]
+    Gateway --> Arkiv[Arkiv Tiramisu]
     Reviewer[Approved reviewer wallet] --> Arkiv
-    Viewer[Independent record viewer] --> Arkiv
+    Viewer[Hash-only browser viewer] --> Gateway
+    External[Independent SDK client with own provider] --> Arkiv
 ```
 
 - `apps/web`: Vite frontend, English/Hindi workflow, upload integrity check, evidence report, public viewer, reviewer publishing.
-- `scanner`: bounded static APK inspection, token-protected jobs, CLI, and five-application evaluation.
+- `scanner`: bounded static APK inspection, token-protected jobs, CLI, and twelve-application evaluation.
+- `worker`: method- and namespace-restricted Arkiv read gateway with private credential storage.
 - `packages/arkiv-client`: reusable query, schema validation, creator-policy, correction, and publishing client.
 - `arkiv`: entity schema, queries, reviewer addresses, and integration friction documentation.
 - `tests`: scanner checks, Arkiv trust checks, and browser flow checks.
@@ -50,10 +53,11 @@ Use Node.js 22.12 or later, Python 3.11 or later, and a JRE compatible with Andr
 
 ```sh
 npm ci
+npm run build
 npm run dev
 ```
 
-The frontend opens at `http://localhost:5173` and proxies `/api` to `http://127.0.0.1:8000`. In another terminal, run the scanner from the repository root:
+The frontend opens at `http://localhost:5173`. It proxies `/api/arkiv-rpc` to the local Worker on port 8787 and other `/api` requests to the scanner on port 8000. To use local keyed reads, put your own Arkiv access key in ignored `.dev.vars` as `ARKIV_API_KEY=...`, then run `npx wrangler dev --local --port 8787` in a separate terminal. Never put the credential in a Vite variable or commit it. Alternatively configure your own SDK transport to Arkiv's raw RPC. In another terminal, run the scanner from the repository root:
 
 ```powershell
 python -m venv .local/venv
@@ -69,7 +73,7 @@ For a separately hosted API, set `VITE_API_URL` to its HTTPS origin before `npm 
 
 ## Arkiv integration
 
-Tiramisu chain ID is **7738577**. Browser reads use the public RPC; consumer checks never request a wallet. Writes come from an approved reviewer wallet and use GLM testnet gas.
+Tiramisu chain ID is **7738577**. Browser HTTP reads use the same-origin `/api/arkiv-rpc` gateway, which keeps its Arkiv API credential private and forwards supported read requests to Arkiv. The public RPC remains available for independent clients; published records are not held in the scan service. Consumer checks never request a wallet. Writes come from an approved reviewer wallet and use GLM testnet gas. Unavailable lookups are reported separately from absent records; the public viewer bounds stalled reads to 30 seconds and refreshes current evidence every 60 seconds.
 
 The public policy at [`apps/web/public/data/trust-policy.json`](apps/web/public/data/trust-policy.json) defines accepted **creator** addresses. The client validates protocol metadata and typed attributes against the payload. A publisher name inside JSON is never proof of authorship. An empty policy does not accept arbitrary writers.
 
@@ -79,27 +83,34 @@ The public policy at [`apps/web/public/data/trust-policy.json`](apps/web/public/
 
 Published payloads are readonly. Arkiv ownership, transfer, deletion, expiry, and historical retention remain separate properties. Expired records are excluded from live queries; expiry is not a safety clearance or a guarantee that historical data was erased. Main records have lifetimes that cover judging. Short-lived expiry experiments must use separate records so the judging dataset remains available.
 
-The selected Arkiv property is an independently readable, wallet-authored public evidence layer. Private APK inspection can use conventional infrastructure; it is not claimed to require Web3. See [`arkiv/schema.md`](arkiv/schema.md) for exact queries and [`arkiv/friction.md`](arkiv/friction.md) for reproducible SDK integration evidence.
+The selected Arkiv property is an independently readable, wallet-authored public evidence layer. Private APK inspection can use conventional infrastructure; it is not claimed to require Web3. The client trusts its RPC provider for protocol metadata; it does not independently verify a cryptographic state proof. Other stacks could reproduce the design with additional authorship, indexing, and availability infrastructure. See [`arkiv/schema.md`](arkiv/schema.md) for exact queries and [`arkiv/friction.md`](arkiv/friction.md) for reproducible SDK integration evidence.
 
-## Five-application evaluation
+## Twelve-application evaluation
 
-Real APKs were downloaded from upstream public sources and inspected without installation or execution. The two risky cases are intentionally insecure training applications, **not confirmed malware or scams**. Sensitive permissions in a legitimate application can be expected for its purpose.
+Real APKs were inspected without installation or execution. Five releases came from upstream projects; five historical malicious samples match exact primary-research IOCs across three campaigns. The two training controls are intentionally insecure applications, **not confirmed malware or scams**. Sensitive permissions in a legitimate application can be expected for its purpose. A malicious classification comes from the cited research, not from this scanner's heuristics.
 
 | Application and exact source | Version | Signature | Declared permissions | Sensitive permissions | Findings |
 |---|---|---|---:|---:|---:|
 | [KeePassDX](https://github.com/Kunzisoft/KeePassDX/releases/tag/4.5.5) | 4.5.5 libre | Verified | 9 | 0 | 0 |
 | [Aegis](https://github.com/beemdevelopment/Aegis/releases/tag/v3.4.3) | 3.4.3 | Verified | 6 | 1 | 1 |
 | [NewPipe](https://github.com/TeamNewPipe/NewPipe/releases/tag/v0.29.1) | 0.29.1 | Verified | 11 | 2 | 1 |
+| Fossify Calculator | 1.4.0 | Verified | 1 | 0 | 0 |
+| Fossify File Manager | 1.6.2 | Verified | 6 | 3 | 1 |
+| Exodus spyware | Research specimen | Verified | 13 | 10 | 2 |
+| Fake MetaMask clipper | Research specimen | Verified | 3 | 1 | 2 |
+| Fake BtcTurk phishing | Research specimen | Verified | 6 | 0 | 1 |
+| Fake BtcTurk beta | Research specimen | Verified | 8 | 1 | 1 |
+| Fake Koineks phishing | Research specimen | Verified | 8 | 1 | 1 |
 | [InsecureBankv2](https://github.com/dineshshetty/Android-InsecureBankv2/tree/3c8cc3a3ce45ed56d0f58f236b541b41f992e51f) | commit `3c8cc3a` | Verified | 12 | 7 | 3 |
 | [PIVAA](https://github.com/HTBridge/pivaa/tree/7fde8956083ec4c6023c75f013f72023d60eda12) | commit `7fde895` | Verified | 12 | 8 | 3 |
 
-Method: Androguard **4.1.4** and Android Build Tools **35.0.0** signature verification. Results, file hashes, signing fingerprints, sources, licences, and analysis limits are in [`scanner/evaluation.json`](scanner/evaluation.json). Five examples demonstrate integration behavior; they do not establish detection accuracy.
+Method: Androguard **4.1.4** and Android Build Tools **35.0.0** signature verification. Results, file hashes, signing fingerprints, pinned sources, primary research digests, licences, and analysis limits are in [`scanner/evaluation.json`](scanner/evaluation.json). These selected examples demonstrate integration behavior; they do not establish detection accuracy, current India-specific threat coverage, or production antivirus performance.
 
 ```sh
 python -m scanner.evaluate --download
 ```
 
-This command downloads binaries into ignored `.local/samples`, keeps raw reports private, and exports sanitized metadata. No APKs are redistributed in this repository or offered by the product UI.
+This reproduces seven upstream-release/training inputs into ignored `.local/samples` and private `.local/results`; it preserves the published twelve-sample evidence. The separate opt-in research command in [scanner/README.md](scanner/README.md) reproduces all twelve hosted uploads from pinned protected research archives, validating primary digests before static inspection. No APKs are redistributed in this repository or offered by the product UI.
 
 ## Verification
 
@@ -110,9 +121,9 @@ python -m pytest tests/scanner -q
 npx playwright test --config tests/web/playwright.config.ts
 ```
 
-Run the frontend before the browser checks. Browser tests use mocked scan responses, a simulated public-network outage, and controlled record fixtures to check mobile/Hindi usability, rejected input, private token handling, permission explanations, file-hash mismatch protection, distinct unknown/incomplete/unavailable identity states, and viewer updates and expiry. They do not substitute for live API or live-chain verification.
+Run the frontend before the browser checks. Browser tests use mocked scan responses, a simulated public-network outage, and controlled record fixtures to check mobile/Hindi usability, rejected input, private token handling, permission explanations, file-hash mismatch protection, distinct unknown/incomplete/unavailable identity states, viewer updates and expiry, stalled-query recovery, and refresh cooldowns. They do not substitute for live API or live-chain verification.
 
-Scanner evaluation uses the five actual upstream APKs above. To enable optional real-file scanner integration tests, set `SCAMSIGNAL_INTEGRATION_APK` to a private local APK. See the scanner README for the exact environment.
+The measured evaluation uses the twelve actual APKs above. To enable optional real-file scanner integration tests, set `SCAMSIGNAL_INTEGRATION_APK` to a private local APK. See the scanner README for the exact environment. Run `npm run arkiv:verify` for a fresh live read-back through the public gateway. `SCAMSIGNAL_READ_RPC_URL` selects your own non-secret provider URL; `SCAMSIGNAL_ARKIV_KEY_FILE` optionally supplies an access-key file outside the checkout for direct entity auditing. Credentials must stay out of URLs and public output.
 
 ## Scope, privacy, and limitations
 
@@ -122,10 +133,11 @@ Scanner evaluation uses the five actual upstream APKs above. To enable optional 
 - Public records exclude raw binaries, certificate subject names, embedded strings, personal data, and secrets. Demo authors are project reviewers, not official authorities.
 - Server-side uploads are private within this system's retention policy, not anonymous or end-to-end encrypted. Privacy is based on data minimization, not zero-knowledge claims.
 - Process limits reduce parser risk but are not a complete operating-system sandbox. The demo is not a production antivirus service. A production deployment needs dedicated isolation, rate limits, and restricted worker egress.
+- The free demo has finite hosting and RPC quotas. The browser gateway limits reads to approximately 60 requests/minute per Cloudflare location; it is not a global quota guarantee. Chain/provider failures are shown explicitly.
 
 ## Hackathon fit
 
-Primary target: **Best Indian Use Case**, subject to the team's nationality eligibility. The phone-first, free English/Hindi check addresses the moment before a received APK is installed.
+Primary target: **Best Indian Use Case**. The team includes an Indian national. The phone-first, free English/Hindi check addresses the moment before a received APK is installed.
 
 Additional tracks: **Security** through creator verification and authorized retractions; **Open Source** through reusable entity contracts and the client library; **Censorship Resistance** through independent public reads when the analysis API is offline. We do not claim a full privacy solution.
 

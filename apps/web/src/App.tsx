@@ -41,6 +41,14 @@ const API = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
 const LIMIT = 50 * 1024 * 1024;
 const loadArkiv = () => import("@scamsignal/arkiv-client");
 type Phase = "hashing" | "uploading" | "queued" | "processing" | "resolving";
+type EvaluatedExample = Example & {
+  classification: string;
+  sourceUrl: string;
+  evidenceUrls: string[];
+  evidenceConfidence: string;
+  malwareFamily: string;
+  evidenceHash?: { algorithm: string; value: string };
+};
 const unavailable: ArkivResolution = {
   status: "unavailable",
   passport: { status: "incomplete", records: [] },
@@ -76,7 +84,7 @@ const readableDate = (value: string | number | undefined) => {
 export default function App() {
   const [path, setPath] = useState(window.location.pathname);
   const [language, setLanguage] = useState<Language>("en");
-  const [examples, setExamples] = useState<Example[]>([]);
+  const [examples, setExamples] = useState<EvaluatedExample[]>([]);
   const [report, setReport] = useState<ScanReport | null>(null);
   const [resolution, setResolution] = useState<ArkivResolution | null>(null);
   const [phase, setPhase] = useState<Phase | null>(null);
@@ -84,10 +92,21 @@ export default function App() {
   const [fileName, setFileName] = useState("");
   const [source, setSource] = useState<"upload" | "example">("upload");
   const abortRef = useRef<AbortController | null>(null);
+  const refreshReportRef = useRef<(() => void) | null>(null);
   const activeJobRef = useRef<{ scan_id: string; access_token: string } | null>(
     null,
   );
   const tr = (en: string, hi: string) => (language === "hi" ? hi : en);
+  const contextCase = examples.find(
+    (example) =>
+      example.id === "faketurk" &&
+      example.classification === "documented-malware-sample" &&
+      example.report.signature.status === "verified" &&
+      example.report.coverage.manifest &&
+      !example.report.permissions.some(
+        (permission) => permission.category === "sensitive",
+      ),
+  );
 
   useEffect(() => {
     const change = () => setPath(window.location.pathname);
@@ -120,6 +139,31 @@ export default function App() {
                     item.description ||
                     "",
                 ),
+                classification: String(item.classification || "unclassified"),
+                sourceUrl: /^https?:\/\//i.test(String(item.source_url || ""))
+                  ? String(item.source_url)
+                  : "",
+                evidenceUrls: Array.isArray(item.evidence_urls)
+                  ? item.evidence_urls.filter(
+                      (url): url is string =>
+                        typeof url === "string" && /^https?:\/\//i.test(url),
+                    )
+                  : [],
+                evidenceConfidence: String(item.evidence_confidence || ""),
+                malwareFamily: String(item.malware_family || ""),
+                evidenceHash:
+                  item.evidence_hash && typeof item.evidence_hash === "object"
+                    ? {
+                        algorithm: String(
+                          (item.evidence_hash as Record<string, unknown>)
+                            .algorithm || "",
+                        ),
+                        value: String(
+                          (item.evidence_hash as Record<string, unknown>)
+                            .value || "",
+                        ),
+                      }
+                    : undefined,
                 report: sample,
               };
             }),
@@ -173,10 +217,12 @@ export default function App() {
     async function refresh() {
       if (refreshing || disposed) return;
       refreshing = true;
+      setResolution(null);
       const next = await lookup(report!);
       if (!disposed) setResolution(next);
       refreshing = false;
     }
+    refreshReportRef.current = refresh;
     let stop: (() => void) | undefined;
     loadArkiv()
       .then((client) => {
@@ -194,11 +240,30 @@ export default function App() {
     const timer = window.setInterval(refresh, 60000);
     return () => {
       disposed = true;
+      refreshReportRef.current = null;
       clearTimeout(debounce);
       clearInterval(timer);
       stop?.();
     };
   }, [report]);
+  useEffect(() => {
+    if (!report || resolution?.status !== "available") return;
+    const expires = [...resolution.passport.records, ...resolution.warnings]
+      .map((record) => new Date(record.expires_at || "").getTime())
+      .filter(Number.isFinite);
+    if (!expires.length) return;
+    const timer = window.setTimeout(
+      () => {
+        setResolution(null);
+        refreshReportRef.current?.();
+      },
+      Math.min(
+        2147483647,
+        Math.max(1000, Math.min(...expires) - Date.now() + 1),
+      ),
+    );
+    return () => clearTimeout(timer);
+  }, [report, resolution]);
   async function openExample(example: Example) {
     abortRef.current?.abort();
     deletePrivateJob();
@@ -458,8 +523,8 @@ export default function App() {
                 </h1>
                 <p>
                   {tr(
-                    "Received an unfamiliar Android app? Inspect its signing identity, permissions, and verifiable warnings before you take the next step.",
-                    "कोई अनजान Android ऐप मिला है? आगे बढ़ने से पहले उसकी हस्ताक्षर पहचान, अनुमतियाँ और सत्यापित चेतावनियाँ जाँचें।",
+                    "One Android app. See who signed it, what it requests, and what trusted reviewers know.",
+                    "एक Android ऐप। देखें कि हस्ताक्षर किसके हैं, वह क्या माँगता है और विश्वसनीय समीक्षकों को क्या पता है।",
                   )}
                 </p>
                 <div className="intro-assurances">
@@ -476,39 +541,27 @@ export default function App() {
                     {tr("APK stays private", "APK निजी रहती है")}
                   </span>
                 </div>
-              </div>
-              <div className="passport-preview" aria-hidden="true">
-                <div className="passport-preview-top">
-                  <span className="passport-wordmark">
-                    <Fingerprint size={19} />
-                    AppPassport
-                  </span>
-                  <span className="tiny-label">RELEASE IDENTITY</span>
-                </div>
-                <div className="preview-app">
-                  <span className="preview-app-icon">
-                    <Smartphone size={27} />
-                  </span>
-                  <div>
-                    <strong>Your next app</strong>
-                    <span>Know the file behind the name.</span>
+                {contextCase && (
+                  <div className="hero-case">
+                    <span className="eyebrow">
+                      {tr("WHY CONTEXT MATTERS", "संदर्भ क्यों ज़रूरी है")}
+                    </span>
+                    <p>
+                      {tr(
+                        "A documented fake BtcTurk APK has a valid signature and requests zero sensitive permissions. The research evidence reveals the phishing.",
+                        "दस्तावेज़ित नकली BtcTurk APK के हस्ताक्षर वैध हैं और वह कोई संवेदनशील अनुमति नहीं माँगती। शोध के सबूत फ़िशिंग का खुलासा करते हैं।",
+                      )}
+                    </p>
+                    <button
+                      className="text-link"
+                      onClick={() => openExample(contextCase)}
+                      disabled={!!phase}
+                    >
+                      {tr("Read this case", "यह मामला पढ़ें")}
+                      <ArrowRight size={14} />
+                    </button>
                   </div>
-                </div>
-                <div className="preview-data">
-                  <span>Signature</span>
-                  <span className="preview-data-line" />
-                  <CheckCircle2 size={16} />
-                  <span>Permissions</span>
-                  <span className="preview-data-line shorter" />
-                  <Search size={16} />
-                  <span>Reviewer evidence</span>
-                  <span className="preview-data-line" />
-                  <ShieldCheck size={16} />
-                </div>
-                <div className="preview-footer">
-                  <LockKeyhole size={13} />
-                  <span>A clearer view, before installation.</span>
-                </div>
+                )}
               </div>
             </section>
             <section
@@ -580,17 +633,15 @@ export default function App() {
                 </div>
               </div>
               <aside className="understand-panel">
-                <h2>
-                  {tr("Three things to look for", "तीन चीज़ें ध्यान से देखें")}
-                </h2>
+                <h2>{tr("Understand the evidence", "सबूत को समझें")}</h2>
                 <div className="explanation-row">
                   <Fingerprint size={23} />
                   <div>
                     <h3>{tr("Who signed it?", "हस्ताक्षर किसके हैं?")}</h3>
                     <p>
                       {tr(
-                        "Compare the file with a reviewed release, beyond the app name and icon.",
-                        "ऐप के नाम और आइकन से आगे बढ़कर फ़ाइल को समीक्षा किए गए रिलीज़ से मिलाएँ।",
+                        "Compare the exact file with a reviewed reference, beyond the app name and icon.",
+                        "ऐप के नाम और आइकन से आगे बढ़कर सटीक फ़ाइल को समीक्षा किए गए संदर्भ से मिलाएँ।",
                       )}
                     </p>
                   </div>
@@ -633,53 +684,25 @@ export default function App() {
                 </p>
               </aside>
             </section>
-            {examples.length > 0 && (
-              <section className="examples-section container">
-                <div className="section-heading">
-                  <div>
-                    <h2>{tr("Explore the evidence", "सबूत देखें")}</h2>
-                    <p>
-                      {tr(
-                        "Five application checks, with clearly labelled precomputed reports.",
-                        "पहले से तैयार रिपोर्ट के साथ पाँच ऐप की जाँच।",
-                      )}
-                    </p>
-                  </div>
-                  <span className="subtle-label">
-                    {tr("Demo collection", "डेमो संग्रह")}
-                  </span>
-                </div>
-                <div className="example-list">
-                  {examples.slice(0, 5).map((example, i) => (
-                    <button
-                      className="example-button"
-                      key={example.id}
-                      onClick={() => openExample(example)}
-                      disabled={!!phase}
-                    >
-                      <span className="example-index">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span className="example-content">
-                        <strong>{example.label}</strong>
-                        <span>
-                          {example.context || example.report.package_name}
-                        </span>
-                      </span>
-                      <ArrowRight size={17} />
-                    </button>
-                  ))}
-                </div>
-              </section>
-            )}
             {report && (
               <ReportView
                 report={report}
                 resolution={resolution}
                 source={source}
                 language={language}
+                sample={examples.find(
+                  (example) => example.report.apk_sha256 === report.apk_sha256,
+                )}
                 loading={phase === "resolving"}
                 onReset={reset}
+              />
+            )}
+            {examples.length > 0 && (
+              <EvaluationMatrix
+                examples={examples}
+                language={language}
+                disabled={!!phase}
+                onOpen={openExample}
               />
             )}
             <section className="purpose-section container">
@@ -753,14 +776,466 @@ export default function App() {
             </summary>
             <div className="footer-about">
               {tr(
-                "ScamSignal performs static APK inspection. A valid signature proves file integrity and signing identity, not trustworthiness. References are reviewed records, not official endorsements. Public demo advisories use synthetic data. Expiry is not a safety clearance or erasure guarantee.",
-                "ScamSignal APK का स्थिर निरीक्षण करता है। वैध हस्ताक्षर फ़ाइल और हस्ताक्षर पहचान प्रमाणित करते हैं, भरोसा नहीं। संदर्भ समीक्षा किए गए रिकॉर्ड हैं, आधिकारिक समर्थन नहीं। सार्वजनिक डेमो चेतावनियाँ कृत्रिम डेटा का उपयोग करती हैं। समाप्ति सुरक्षा या पूर्ण मिटाने की गारंटी नहीं है।",
+                "ScamSignal performs static APK inspection. A valid signature proves file integrity and signing identity, not trustworthiness. References are reviewed records, not official endorsements. Evaluation advisories describe cited research samples. Expiry is not a safety clearance or erasure guarantee.",
+                "ScamSignal APK का स्थिर निरीक्षण करता है। वैध हस्ताक्षर फ़ाइल और हस्ताक्षर पहचान प्रमाणित करते हैं, भरोसा नहीं। संदर्भ समीक्षा किए गए रिकॉर्ड हैं, आधिकारिक समर्थन नहीं। जाँच की चेतावनियाँ स्रोत सहित शोध नमूनों का वर्णन करती हैं। समाप्ति सुरक्षा या पूर्ण मिटाने की गारंटी नहीं है।",
               )}
             </div>
           </details>
         </div>
       </footer>
     </>
+  );
+}
+
+function EvaluationMatrix({
+  examples,
+  language,
+  disabled,
+  onOpen,
+}: {
+  examples: EvaluatedExample[];
+  language: Language;
+  disabled: boolean;
+  onOpen: (example: Example) => void;
+}) {
+  const tr = (en: string, hi: string) => (language === "hi" ? hi : en);
+  const [filter, setFilter] = useState("all");
+  const [records, setRecords] = useState<Record<
+    string,
+    ArkivResolution
+  > | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [checkedAt, setCheckedAt] = useState<string | null>(null);
+  const [enabled, setEnabled] = useState(false);
+  const [recordError, setRecordError] = useState(false);
+  const mounted = useRef(true);
+  const inFlight = useRef(false);
+  const group = (example: EvaluatedExample) =>
+    example.classification === "documented-malware-sample"
+      ? "malware"
+      : example.classification === "intentionally-insecure-training-app"
+        ? "training"
+        : example.classification === "upstream-open-source-release"
+          ? "upstream"
+          : "unclassified";
+  const groupName = (value: string) =>
+    value === "upstream"
+      ? tr("Upstream release", "मूल रिलीज़")
+      : value === "malware"
+        ? tr("Documented malware", "दस्तावेज़ित मैलवेयर")
+        : value === "training"
+          ? tr("Training control", "प्रशिक्षण नमूना")
+          : tr("Unclassified", "वर्ग तय नहीं");
+  const totals = {
+    upstream: examples.filter((example) => group(example) === "upstream")
+      .length,
+    malware: examples.filter((example) => group(example) === "malware").length,
+    training: examples.filter((example) => group(example) === "training")
+      .length,
+  };
+  const signedMalware = examples.filter(
+    (example) =>
+      group(example) === "malware" &&
+      example.report.signature.status === "verified",
+  ).length;
+  const visible = examples.filter(
+    (example) => filter === "all" || group(example) === filter,
+  );
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+  async function readEvidence() {
+    if (inFlight.current) return;
+    inFlight.current = true;
+    setLoading(true);
+    setEnabled(true);
+    let deadline: number | undefined;
+    try {
+      const next = await Promise.race([
+        (async () => {
+          const client = await loadArkiv();
+          const data = await client.listPublicRecords();
+          return Object.fromEntries(
+            examples.map((example) => [
+              example.id,
+              client.resolveRecords(
+                example.report,
+                data.records,
+                data.ignored_count,
+              ) as unknown as ArkivResolution,
+            ]),
+          );
+        })(),
+        new Promise<never>((_, reject) => {
+          deadline = window.setTimeout(
+            () => reject(new Error("Public lookup timed out.")),
+            30000,
+          );
+        }),
+      ]);
+      if (mounted.current) {
+        setRecords(next);
+        setCheckedAt(new Date().toISOString());
+        setRecordError(false);
+      }
+    } catch {
+      if (mounted.current) {
+        setRecords(null);
+        setRecordError(true);
+      }
+    } finally {
+      clearTimeout(deadline);
+      inFlight.current = false;
+      if (mounted.current) setLoading(false);
+    }
+  }
+  useEffect(() => {
+    if (!enabled) return;
+    const timer = window.setInterval(readEvidence, 60000);
+    return () => clearInterval(timer);
+  }, [enabled, examples]);
+  useEffect(() => {
+    if (!records) return;
+    const expires = Object.values(records)
+      .flatMap((value) => [...value.passport.records, ...value.warnings])
+      .map((record) => new Date(record.expires_at || "").getTime())
+      .filter(Number.isFinite);
+    if (!expires.length) return;
+    const timer = window.setTimeout(
+      readEvidence,
+      Math.min(
+        2147483647,
+        Math.max(1000, Math.min(...expires) - Date.now() + 1),
+      ),
+    );
+    return () => clearTimeout(timer);
+  }, [records, examples]);
+  const passportName = (value: ArkivResolution | undefined) =>
+    loading
+      ? tr("Checking…", "जाँच जारी…")
+      : recordError
+        ? tr("Unavailable", "उपलब्ध नहीं")
+        : !value
+          ? tr("Not checked", "अभी नहीं जाँचा")
+          : value.passport.status === "exact_match"
+            ? tr("Reference matches", "संदर्भ का मिलान")
+            : value.passport.status === "signer_mismatch"
+              ? tr("Signer differs", "हस्ताक्षर अलग")
+              : value.passport.status === "incomplete"
+                ? tr("Incomplete", "जाँच अधूरी")
+                : tr("No exact match", "सटीक मिलान नहीं");
+  return (
+    <section
+      className="evaluation-section container"
+      aria-labelledby="evaluation-title"
+    >
+      <div className="evaluation-intro">
+        <span className="eyebrow">
+          {tr("THE EVALUATION COLLECTION", "जाँच के नमूने")}
+        </span>
+        <h2 id="evaluation-title">
+          {tr(
+            "Different apps. Observable evidence.",
+            "अलग ऐप। देखे जा सकने वाले सबूत।",
+          )}
+        </h2>
+        <p>
+          {tr(
+            "Compare measured APK reports with documented provenance. Open any report to see the evidence behind each signal.",
+            "दस्तावेज़ित स्रोत के साथ APK की मापी गई रिपोर्ट की तुलना करें। हर संकेत का सबूत देखने के लिए रिपोर्ट खोलें।",
+          )}
+        </p>
+      </div>
+      <div
+        className="evaluation-totals"
+        aria-label={tr("Dataset composition", "नमूनों का वर्गीकरण")}
+      >
+        <span>
+          <strong>{totals.upstream}</strong>
+          {tr("upstream releases", "मूल रिलीज़")}
+        </span>
+        <span>
+          <strong>{totals.malware}</strong>
+          {tr("documented malware samples", "दस्तावेज़ित मैलवेयर नमूने")}
+        </span>
+        <span>
+          <strong>{totals.training}</strong>
+          {tr("training controls", "प्रशिक्षण नमूने")}
+        </span>
+      </div>
+      <p className="evaluation-context">
+        <Info size={16} />
+        {tr(
+          "Precomputed static reports. An upstream release is not a safety guarantee; training controls are deliberately vulnerable, not real-world scam cases. Sample APKs are not redistributed here.",
+          "पहले से तैयार स्थिर रिपोर्ट। मूल रिलीज़ सुरक्षा की गारंटी नहीं; प्रशिक्षण नमूने जानबूझकर असुरक्षित हैं, वास्तविक घोटाले नहीं। यहाँ नमूनों की APK वितरित नहीं होती।",
+        )}
+      </p>
+      <div className="evaluation-toolbar">
+        <div
+          className="evaluation-filters"
+          aria-label={tr(
+            "Filter evaluated applications",
+            "जाँचे गए ऐप का वर्ग चुनें",
+          )}
+        >
+          {[
+            {
+              id: "all",
+              name: tr("All apps", "सभी ऐप"),
+              count: examples.length,
+            },
+            {
+              id: "upstream",
+              name: tr("Upstream releases", "मूल रिलीज़"),
+              count: totals.upstream,
+            },
+            {
+              id: "malware",
+              name: tr("Documented threats", "दस्तावेज़ित खतरे"),
+              count: totals.malware,
+            },
+            {
+              id: "training",
+              name: tr("Training controls", "प्रशिक्षण नमूने"),
+              count: totals.training,
+            },
+          ].map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              aria-pressed={filter === item.id}
+              onClick={() => setFilter(item.id)}
+            >
+              {item.name}
+              <span>{item.count}</span>
+            </button>
+          ))}
+        </div>
+        <button
+          className="button secondary evidence-check"
+          disabled={loading}
+          onClick={readEvidence}
+        >
+          {loading ? (
+            <LoaderCircle size={15} className="spin" />
+          ) : (
+            <Globe2 size={15} />
+          )}
+          {enabled
+            ? tr("Refresh Arkiv evidence", "Arkiv सबूत फिर जाँचें")
+            : tr("Check Arkiv evidence", "Arkiv के सबूत जाँचें")}
+        </button>
+      </div>
+      {enabled && (
+        <p
+          className={`evaluation-freshness ${recordError ? "lookup-failed" : ""}`}
+          role="status"
+        >
+          {loading
+            ? tr(
+                "Reading current published Arkiv records…",
+                "Arkiv के मौजूदा रिकॉर्ड पढ़े जा रहे हैं…",
+              )
+            : recordError
+              ? tr(
+                  "Arkiv lookup unavailable. Record absence has not been established.",
+                  "Arkiv की खोज उपलब्ध नहीं। रिकॉर्ड की अनुपस्थिति तय नहीं हुई है।",
+                )
+              : `${tr("Arkiv snapshot checked", "Arkiv रिकॉर्ड जाँच का समय")} ${new Date(checkedAt || "").toLocaleTimeString(language === "hi" ? "hi-IN" : "en-IN")} · ${tr("refreshes every 60 seconds", "हर 60 सेकंड में नई जाँच")}`}
+        </p>
+      )}
+      <div className="evaluation-table-wrap">
+        <table className="evaluation-table">
+          <caption className="visually-hidden">
+            {tr(
+              "Measured reports and current reviewer evidence",
+              "मापी गई रिपोर्ट और मौजूदा समीक्षक सबूत",
+            )}
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">
+                {tr("Application & provenance", "ऐप और स्रोत")}
+              </th>
+              <th scope="col">{tr("Signature", "हस्ताक्षर")}</th>
+              <th scope="col">{tr("Sensitive access", "संवेदनशील पहुँच")}</th>
+              <th scope="col">{tr("Observed signals", "देखे गए संकेत")}</th>
+              <th scope="col">{tr("Arkiv evidence", "Arkiv के सबूत")}</th>
+              <th scope="col">
+                <span className="visually-hidden">
+                  {tr("Open report", "रिपोर्ट खोलें")}
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {visible.map((example) => {
+              const value = records?.[example.id];
+              const kind = group(example);
+              const sensitive = example.report.permissions.filter(
+                (permission) => permission.category === "sensitive",
+              ).length;
+              return (
+                <tr key={example.id}>
+                  <th scope="row" className="evaluation-app">
+                    <strong>{example.label}</strong>
+                    <span className={`sample-class ${kind}`}>
+                      {groupName(kind)}
+                    </span>
+                    {example.malwareFamily && (
+                      <span className="sample-family">
+                        {example.malwareFamily}
+                      </span>
+                    )}
+                    <details className="sample-provenance">
+                      <summary>
+                        {tr("Source & context", "स्रोत और संदर्भ")}
+                        <ChevronDown size={12} />
+                      </summary>
+                      <p>{example.context}</p>
+                      {example.evidenceConfidence && (
+                        <p className="provenance-method">
+                          {example.evidenceConfidence ===
+                          "primary-report-hash-match"
+                            ? tr(
+                                "Evidence: file hash matched to a primary research report.",
+                                "सबूत: फ़ाइल हैश का मूल शोध रिपोर्ट से मिलान।",
+                              )
+                            : tr(
+                                "Evidence: research collection label; independent primary-report attribution has not been established.",
+                                "सबूत: शोध संग्रह का लेबल; स्वतंत्र मूल रिपोर्ट से पुष्टि नहीं हुई।",
+                              )}
+                        </p>
+                      )}
+                      {example.sourceUrl && (
+                        <a
+                          href={example.sourceUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {tr("Source reference", "मूल स्रोत")}
+                          <ExternalLink size={11} />
+                        </a>
+                      )}
+                      {example.evidenceUrls
+                        .filter((url) => url !== example.sourceUrl)
+                        .map((url, index) => (
+                          <a
+                            key={url}
+                            href={url}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {tr("Research evidence", "शोध सबूत")} {index + 1}
+                            <ExternalLink size={11} />
+                          </a>
+                        ))}
+                      {example.evidenceHash && (
+                        <p className="reported-ioc">
+                          {tr("Primary report IOC", "मूल रिपोर्ट का IOC")} ·{" "}
+                          {example.evidenceHash.algorithm.toUpperCase()}
+                          <code>{example.evidenceHash.value}</code>
+                        </p>
+                      )}
+                      <span className="sample-hash-label">
+                        {tr("Analyzed APK SHA-256", "जाँची गई APK का SHA-256")}
+                      </span>
+                      <code>{example.report.apk_sha256}</code>
+                    </details>
+                  </th>
+                  <td data-label={tr("Signature", "हस्ताक्षर")}>
+                    <span className="matrix-value">
+                      {example.report.signature.status === "verified" ? (
+                        <>
+                          <CheckCircle2 size={14} />
+                          {tr("Verified", "सत्यापित")}
+                        </>
+                      ) : example.report.signature.status === "invalid" ? (
+                        <>
+                          <TriangleAlert size={14} />
+                          {tr("Invalid", "अमान्य")}
+                        </>
+                      ) : (
+                        <>
+                          <Info size={14} />
+                          {tr("Unavailable", "उपलब्ध नहीं")}
+                        </>
+                      )}
+                    </span>
+                  </td>
+                  <td data-label={tr("Sensitive access", "संवेदनशील पहुँच")}>
+                    <span className="matrix-value">
+                      {example.report.coverage.manifest
+                        ? `${sensitive} ${tr("declared", "घोषित")}`
+                        : tr("Not inspected", "जाँच नहीं हुई")}
+                    </span>
+                  </td>
+                  <td data-label={tr("Observed signals", "देखे गए संकेत")}>
+                    <span className="matrix-value">
+                      {example.report.findings.length}{" "}
+                      {tr("findings", "निष्कर्ष")}
+                    </span>
+                  </td>
+                  <td data-label={tr("Arkiv evidence", "Arkiv के सबूत")}>
+                    <span className="matrix-value">{passportName(value)}</span>
+                    <span className="matrix-warning-count">
+                      {!loading && !recordError && value
+                        ? `${value.warnings.length} ${tr("active warnings", "सक्रिय चेतावनियाँ")}`
+                        : tr("Reviewer records", "समीक्षक रिकॉर्ड")}
+                    </span>
+                  </td>
+                  <td className="matrix-action">
+                    <button
+                      className="example-button"
+                      disabled={disabled}
+                      onClick={() => onOpen(example)}
+                      aria-label={`${tr("Read", "पढ़ें")} ${example.label} ${tr("report", "रिपोर्ट")}`}
+                    >
+                      {tr("Read report", "रिपोर्ट पढ़ें")}
+                      <span className="visually-hidden"> {example.label}</span>
+                      <ArrowRight size={15} />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        {!visible.length && (
+          <p className="empty-collection">
+            {tr(
+              "No evaluated samples in this category yet.",
+              "इस वर्ग में अभी जाँचे गए नमूने नहीं हैं।",
+            )}
+          </p>
+        )}
+      </div>
+      <div className="evaluation-insight">
+        <Fingerprint size={20} />
+        <div>
+          <h3>
+            {tr(
+              "A valid signature is one piece of evidence.",
+              "वैध हस्ताक्षर सबूत का एक हिस्सा है।",
+            )}
+          </h3>
+          <p>
+            {signedMalware > 0
+              ? tr(
+                  `${signedMalware} documented malware sample(s) in this collection have verified signatures. Signing integrity does not establish trustworthy behavior.`,
+                  `इस संग्रह के ${signedMalware} दस्तावेज़ित मैलवेयर नमूनों के हस्ताक्षर सत्यापित हैं। हस्ताक्षर की अखंडता भरोसेमंद व्यवहार तय नहीं करती।`,
+                )
+              : tr(
+                  "Signatures identify the signer and protect file integrity. Permissions describe requested access. Reviewer records add provenance and context. Each answers a different question.",
+                  "हस्ताक्षर लेखक की पहचान और फ़ाइल की अखंडता बताते हैं। अनुमतियाँ माँगी गई पहुँच बताती हैं। समीक्षक रिकॉर्ड स्रोत और संदर्भ जोड़ते हैं। हर जाँच एक अलग सवाल का जवाब देती है।",
+                )}
+          </p>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -896,6 +1371,7 @@ function ReportView({
   report,
   resolution,
   source,
+  sample,
   language,
   loading,
   onReset,
@@ -903,6 +1379,7 @@ function ReportView({
   report: ScanReport;
   resolution: ArkivResolution | null;
   source: "upload" | "example";
+  sample?: EvaluatedExample;
   language: Language;
   loading: boolean;
   onReset?: () => void;
@@ -918,6 +1395,7 @@ function ReportView({
     (p) => p.category === "sensitive",
   );
   const attention =
+    sample?.classification === "documented-malware-sample" ||
     report.findings.some(
       (f) => f.severity === "high" || f.severity === "review",
     ) ||
@@ -930,15 +1408,28 @@ function ReportView({
       )
     : resolution?.passport.status === "exact_match"
       ? tr(
-          "This file matches a reviewed release.",
-          "यह फ़ाइल समीक्षा किए गए रिलीज़ से मेल खाती है।",
+          "This file matches a reviewed reference.",
+          "यह फ़ाइल समीक्षा किए गए संदर्भ से मेल खाती है।",
         )
       : tr("Here’s what we could verify.", "हम यह सत्यापित कर पाए।");
   function download() {
     const blob = new Blob(
       [
         JSON.stringify(
-          { analysis: report, public_evidence: resolution, source },
+          {
+            analysis: report,
+            public_evidence: resolution,
+            source,
+            evaluation_provenance: sample
+              ? {
+                  classification: sample.classification,
+                  context: sample.context,
+                  source_url: sample.sourceUrl,
+                  evidence_urls: sample.evidenceUrls,
+                  evidence_hash: sample.evidenceHash,
+                }
+              : undefined,
+          },
           null,
           2,
         ),
@@ -965,7 +1456,8 @@ function ReportView({
           </span>
           <div>
             <h2>
-              {report.app_name ||
+              {sample?.label ||
+                report.app_name ||
                 report.package_name ||
                 tr("Android application", "Android ऐप")}
             </h2>
@@ -983,6 +1475,59 @@ function ReportView({
           {tr("Save report", "रिपोर्ट सहेजें")}
         </button>
       </div>
+      {sample && (
+        <div
+          className={`sample-context-banner ${sample.classification === "documented-malware-sample" ? "documented-threat" : ""}`}
+        >
+          <Info size={17} />
+          <div>
+            <strong>
+              {sample.classification === "documented-malware-sample"
+                ? tr(
+                    "Known research sample: documented malware",
+                    "पहचाना गया शोध नमूना: दस्तावेज़ित मैलवेयर",
+                  )
+                : sample.classification ===
+                    "intentionally-insecure-training-app"
+                  ? tr(
+                      "Intentionally vulnerable training control",
+                      "जानबूझकर असुरक्षित प्रशिक्षण नमूना",
+                    )
+                  : tr(
+                      "Upstream release used as a provenance control",
+                      "स्रोत की जाँच के लिए मूल रिलीज़",
+                    )}
+            </strong>
+            <p>
+              {sample.classification === "documented-malware-sample"
+                ? tr(
+                    "This exact file matches a documented specimen in the evaluation collection. Its threat label comes from cited research, not from permission counts.",
+                    "यह सटीक फ़ाइल जाँच संग्रह के दस्तावेज़ित नमूने से मेल खाती है। खतरे का वर्ग संदर्भित शोध से आता है, अनुमति की संख्या से नहीं।",
+                  )
+                : sample.classification ===
+                    "intentionally-insecure-training-app"
+                  ? tr(
+                      "This sample is designed for security training. It is distinct from the documented malware specimens.",
+                      "यह नमूना सुरक्षा प्रशिक्षण के लिए बना है। यह दस्तावेज़ित मैलवेयर नमूनों से अलग है।",
+                    )
+                  : tr(
+                      "The source identifies the upstream project and release. It does not establish safety.",
+                      "स्रोत मूल परियोजना और रिलीज़ बताता है। वह सुरक्षा तय नहीं करता।",
+                    )}
+            </p>
+            {(sample.evidenceUrls[0] || sample.sourceUrl) && (
+              <a
+                href={sample.evidenceUrls[0] || sample.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {tr("Read the source evidence", "मूल स्रोत के सबूत पढ़ें")}
+                <ExternalLink size={11} />
+              </a>
+            )}
+          </div>
+        </div>
+      )}
       <div className={`report-verdict ${attention ? "review" : ""}`}>
         <span className="verdict-icon">
           {attention ? <ShieldQuestion size={28} /> : <FileCheck2 size={28} />}
@@ -1049,7 +1594,7 @@ function ReportView({
             ) : resolution.passport.status === "exact_match" ? (
               <>
                 <Fingerprint size={16} />
-                {tr("Exact release match", "सटीक रिलीज़ मिलान")}
+                {tr("Exact reference match", "सटीक संदर्भ मिलान")}
               </>
             ) : resolution.passport.status === "signer_mismatch" ? (
               <>
@@ -1064,7 +1609,7 @@ function ReportView({
             ) : (
               <>
                 <ShieldQuestion size={16} />
-                {tr("No exact release match", "सटीक रिलीज़ मिलान नहीं")}
+                {tr("No exact reference match", "सटीक संदर्भ मिलान नहीं")}
               </>
             )}
           </strong>
@@ -1335,8 +1880,8 @@ function ReportView({
             <div className="passport-result">
               <h4>
                 {tr(
-                  "Reviewed release references",
-                  "समीक्षा किए गए रिलीज़ संदर्भ",
+                  "Reviewed artifact references",
+                  "समीक्षा किए गए फ़ाइल संदर्भ",
                 )}
               </h4>
               {loading ? (
@@ -1347,8 +1892,8 @@ function ReportView({
               ) : resolution?.status === "unavailable" ? (
                 <p>
                   {tr(
-                    "Release references could not be queried. Their absence has not been established.",
-                    "रिलीज़ संदर्भों की खोज पूरी नहीं हुई। उनकी अनुपस्थिति की पुष्टि नहीं है।",
+                    "Artifact references could not be queried. Their absence has not been established.",
+                    "फ़ाइल संदर्भों की खोज पूरी नहीं हुई। उनकी अनुपस्थिति की पुष्टि नहीं है।",
                   )}
                 </p>
               ) : resolution?.passport.records.length ? (
@@ -1588,7 +2133,7 @@ function RecordDetail({
         "app_name",
         kind === "warning"
           ? tr("Reviewer advisory", "समीक्षक चेतावनी")
-          : tr("Reviewed release", "समीक्षा किया गया रिलीज़"),
+          : tr("Reviewed artifact", "समीक्षा की गई फ़ाइल"),
       ),
     ),
   );
@@ -1655,6 +2200,7 @@ function PublicViewer({
   const mounted = useRef(true);
   const requestNumber = useRef(0);
   const inFlight = useRef(false);
+  const lastReadStarted = useRef(0);
   const tr = (en: string, hi: string) => (language === "hi" ? hi : en);
   useEffect(() => {
     mounted.current = true;
@@ -1666,6 +2212,7 @@ function PublicViewer({
   async function readRecords(value: string) {
     if (inFlight.current) return;
     inFlight.current = true;
+    lastReadStarted.current = Date.now();
     const currentRequest = ++requestNumber.current;
     setLoading(true);
     setResult(null);
@@ -1688,19 +2235,30 @@ function PublicViewer({
       coverage: { manifest: false, signature: false, dex: false, notes: [] },
       analyzed_at: new Date().toISOString(),
     };
+    let deadline: number | undefined;
     try {
-      const client = await loadArkiv();
-      const data = await client.listPublicRecords({ apk_sha256: value });
-      report.package_name =
-        data.records.find((record) => record.kind === "passport")
-          ?.package_name ||
-        data.records[0]?.package_name ||
-        "";
-      const next = client.resolveRecords(
-        report,
-        data.records,
-        data.ignored_count,
-      ) as unknown as ArkivResolution;
+      const next = await Promise.race([
+        (async () => {
+          const client = await loadArkiv();
+          const data = await client.listPublicRecords({ apk_sha256: value });
+          report.package_name =
+            data.records.find((record) => record.kind === "passport")
+              ?.package_name ||
+            data.records[0]?.package_name ||
+            "";
+          return client.resolveRecords(
+            report,
+            data.records,
+            data.ignored_count,
+          ) as unknown as ArkivResolution;
+        })(),
+        new Promise<never>((_, reject) => {
+          deadline = window.setTimeout(
+            () => reject(new Error("Public record query timed out.")),
+            30000,
+          );
+        }),
+      ]);
       if (mounted.current && currentRequest === requestNumber.current) {
         setResult(next);
         setCheckedAt(new Date().toISOString());
@@ -1711,10 +2269,12 @@ function PublicViewer({
           ...unavailable,
           error: "The public record network could not be queried.",
         });
+    } finally {
+      clearTimeout(deadline);
+      inFlight.current = false;
+      if (mounted.current && currentRequest === requestNumber.current)
+        setLoading(false);
     }
-    inFlight.current = false;
-    if (mounted.current && currentRequest === requestNumber.current)
-      setLoading(false);
   }
   async function query(e?: FormEvent, selectedHash?: string) {
     e?.preventDefault();
@@ -1748,7 +2308,10 @@ function PublicViewer({
               if (disposed) return;
               setStreamInterrupted(false);
               clearTimeout(debounce);
-              debounce = window.setTimeout(() => readRecords(queriedHash), 350);
+              debounce = window.setTimeout(
+                () => readRecords(queriedHash),
+                Math.max(350, 15000 - (Date.now() - lastReadStarted.current)),
+              );
             },
             () => {
               if (!disposed) setStreamInterrupted(true);
@@ -1793,8 +2356,8 @@ function PublicViewer({
         </h1>
         <p>
           {tr(
-            "Look up an exact APK hash directly on Arkiv. This viewer reads published evidence without sending an APK to the scan service.",
-            "सटीक APK हैश सीधे Arkiv पर खोजें। यह व्यूअर APK को स्कैन सेवा पर भेजे बिना प्रकाशित सबूत पढ़ता है।",
+            "Look up an exact APK hash in published Arkiv records. This viewer reads evidence without sending an APK to the scan service.",
+            "सटीक APK हैश प्रकाशित Arkiv रिकॉर्ड में खोजें। यह व्यूअर APK को स्कैन सेवा पर भेजे बिना सबूत पढ़ता है।",
           )}
         </p>
       </div>
@@ -1832,7 +2395,7 @@ function PublicViewer({
       {examples.length > 0 && (
         <div className="viewer-examples">
           <span>{tr("Or explore a demo hash:", "या डेमो हैश देखें:")}</span>
-          {examples.slice(0, 5).map((example) => (
+          {examples.map((example) => (
             <button
               key={example.id}
               onClick={() => query(undefined, example.report.apk_sha256)}
@@ -1876,8 +2439,11 @@ function PublicViewer({
               )}
             </p>
           )}
-          <p className="viewer-query-hash"><span>{tr("Records for APK", "इस APK के रिकॉर्ड")}</span><CopyValue value={queriedHash} /></p>
-          <h2>{tr("Release references", "रिलीज़ संदर्भ")}</h2>
+          <p className="viewer-query-hash">
+            <span>{tr("Records for APK", "इस APK के रिकॉर्ड")}</span>
+            <CopyValue value={queriedHash} />
+          </p>
+          <h2>{tr("Artifact references", "फ़ाइल संदर्भ")}</h2>
           {result?.passport.records.length
             ? result.passport.records.map((record) => (
                 <RecordDetail
@@ -1891,8 +2457,8 @@ function PublicViewer({
               result?.status === "available" && (
                 <p className="empty-line">
                   {tr(
-                    "No accepted release reference found for this exact hash.",
-                    "इस सटीक हैश के लिए स्वीकृत रिलीज़ संदर्भ नहीं मिला।",
+                    "No accepted artifact reference found for this exact hash.",
+                    "इस सटीक हैश के लिए स्वीकृत फ़ाइल संदर्भ नहीं मिला।",
                   )}
                 </p>
               )}
@@ -1946,8 +2512,8 @@ function Reviewer({ language }: { language: Language }) {
         </h1>
         <p>
           {tr(
-            "Reviewers publish release references, exact-file advisories, and corrections under their own wallet identity. Consumer checks are always free.",
-            "समीक्षक अपनी वॉलेट पहचान से रिलीज़ संदर्भ, सटीक फ़ाइल की चेतावनियाँ और सुधार प्रकाशित करते हैं। उपभोक्ता जाँच हमेशा मुफ़्त है।",
+            "Reviewers publish artifact references, exact-file advisories, and corrections under their own wallet identity. Consumer checks are always free.",
+            "समीक्षक अपनी वॉलेट पहचान से फ़ाइल संदर्भ, सटीक फ़ाइल की चेतावनियाँ और सुधार प्रकाशित करते हैं। उपभोक्ता जाँच हमेशा मुफ़्त है।",
           )}
         </p>
       </div>

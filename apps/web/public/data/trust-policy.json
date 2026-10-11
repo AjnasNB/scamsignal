@@ -8,6 +8,7 @@
     "0xd153c0cc313884da0065615bb411dfb8b873fe54": "ScamSignal evaluation reviewer"
   },
   "rpc_url": "https://rpc.tiramisu.db-chain.testnet.arkiv.network",
+  "browser_rpc_url": "/api/arkiv-rpc",
   "ws_url": "wss://rpc.tiramisu.db-chain.testnet.arkiv.network",
   "policy_note": "Project-curated evaluation references. Approval establishes reviewer identity, not publisher endorsement or APK safety."
 }

@@ -1,13 +1,15 @@
 {
   "schema_version": 1,
-  "evaluated_at": "2026-10-11T13:50:40.194975+00:00",
-  "method": "Androguard 4.1.4 static manifest parsing + Android Build Tools 35.0.0 apksigner signature verification. APKs were not installed or executed.",
+  "evaluated_at": "2026-10-11T14:32:56.729748+00:00",
+  "method": "Androguard 4.1.4 static manifest parsing + Android Build Tools 35.0.0 apksigner signature verification. APKs were not installed or executed. All twelve APKs were uploaded to the deployed Linux API and their private reports deleted after verification. Malicious inputs stayed in original password-protected research archives locally and were decrypted in memory for static upload only.",
   "limitations": [
-    "Five samples demonstrate integration behavior, not detection accuracy.",
-    "Valid signatures establish identity, not publisher legitimacy or safety.",
+    "Twelve selected samples demonstrate integration behavior, not sensitivity, specificity or detection accuracy.",
+    "Five malicious APKs represent three historical research campaigns/families; each exact digest matches its primary research IOC.",
+    "Five upstream open-source releases are provenance controls, not guaranteed-safe applications.",
+    "Two intentionally insecure training controls are separate from the five documented malicious specimens.",
+    "Valid signatures establish file signer identity, not publisher legitimacy or safety.",
     "Declared permissions are capabilities; grants, actual behavior, remote code, DEX behavior and signing lineage are not assessed.",
-    "Two risky cases are purpose-built training apps, not real-world malicious APKs.",
-    "APK binaries and embedded personal strings are excluded from this publication."
+    "APK binaries, private session tokens, certificate subjects and embedded personal strings are excluded from publication."
   ],
   "samples": [
     {
@@ -107,7 +109,7 @@
             "No findings does not establish that an app is safe."
           ]
         },
-        "analyzed_at": "2026-10-11T13:50:36.816158+00:00"
+        "analyzed_at": "2026-10-11T14:32:34.142520+00:00"
       }
     },
     {
@@ -201,7 +203,7 @@
             "No findings does not establish that an app is safe."
           ]
         },
-        "analyzed_at": "2026-10-11T13:50:37.436181+00:00"
+        "analyzed_at": "2026-10-11T14:32:36.311528+00:00"
       }
     },
     {
@@ -327,7 +329,760 @@
             "No findings does not establish that an app is safe."
           ]
         },
-        "analyzed_at": "2026-10-11T13:50:39.139624+00:00"
+        "analyzed_at": "2026-10-11T14:32:38.906401+00:00"
+      }
+    },
+    {
+      "id": "fossifycalculator",
+      "name": "Fossify Calculator",
+      "classification": "upstream-open-source-release",
+      "release": "1.4.0",
+      "license": "GPL-3.0",
+      "source_url": "https://github.com/FossifyOrg/Calculator/releases/tag/1.4.0",
+      "license_url": "https://github.com/FossifyOrg/Calculator/blob/main/LICENSE",
+      "download_url": "https://github.com/FossifyOrg/Calculator/releases/download/1.4.0/calculator-10-foss-release.apk",
+      "ground_truth_note": "Upstream release provenance; not a guarantee of safety.",
+      "report": {
+        "schema_version": 1,
+        "apk_sha256": "7c5443c22d6d62c67dfe80df33ea9161ff0fa440f92590bcb45d7008b57613ed",
+        "file_size": 7047681,
+        "package_name": "org.fossify.math",
+        "version_name": "1.4.0",
+        "version_code": 10,
+        "app_name": "Calculator",
+        "signature": {
+          "status": "verified",
+          "signer_sha256": [
+            "affdb124d3f4720c2f98dbca9eacba0514fba4306e20a2786c861c3c0d6ff292"
+          ],
+          "schemes": [
+            "v2"
+          ],
+          "errors": []
+        },
+        "permissions": [
+          {
+            "name": "org.fossify.android.permission.WRITE_GLOBAL_SETTINGS",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          }
+        ],
+        "findings": [],
+        "coverage": {
+          "manifest": true,
+          "signature": true,
+          "dex": false,
+          "notes": [
+            "Static inspection only; the APK was not installed or executed.",
+            "Declared permissions are capabilities, not observed grants or behavior.",
+            "DEX behavior, remote code, network security resources, and signer rotation lineage are not assessed.",
+            "No findings does not establish that an app is safe."
+          ]
+        },
+        "analyzed_at": "2026-10-11T14:32:40.970661+00:00"
+      }
+    },
+    {
+      "id": "fossifyfiles",
+      "name": "Fossify File Manager",
+      "classification": "upstream-open-source-release",
+      "release": "1.6.2",
+      "license": "GPL-3.0",
+      "source_url": "https://github.com/FossifyOrg/File-Manager/releases/tag/1.6.2",
+      "license_url": "https://github.com/FossifyOrg/File-Manager/blob/main/LICENSE",
+      "download_url": "https://github.com/FossifyOrg/File-Manager/releases/download/1.6.2/file-manager-14-foss-release.apk",
+      "ground_truth_note": "Upstream release provenance; not a guarantee of safety.",
+      "report": {
+        "schema_version": 1,
+        "apk_sha256": "c2993c75ea7287e7ede354b061d9c8772aa9b4b050e7660ec1ebc3592dc3d051",
+        "file_size": 10030982,
+        "package_name": "org.fossify.filemanager",
+        "version_name": "1.6.2",
+        "version_code": 14,
+        "app_name": "File Manager",
+        "signature": {
+          "status": "verified",
+          "signer_sha256": [
+            "affdb124d3f4720c2f98dbca9eacba0514fba4306e20a2786c861c3c0d6ff292"
+          ],
+          "schemes": [
+            "v2"
+          ],
+          "errors": []
+        },
+        "permissions": [
+          {
+            "name": "android.permission.MANAGE_EXTERNAL_STORAGE",
+            "category": "sensitive",
+            "description_en": "Requests broad shared-storage access.",
+            "description_hi": "साझा स्टोरेज तक व्यापक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.POST_NOTIFICATIONS",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.REQUEST_INSTALL_PACKAGES",
+            "category": "sensitive",
+            "description_en": "Requests the ability to ask Android to install other packages.",
+            "description_hi": "अन्य ऐप पैकेज स्थापित करने का अनुरोध करने की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.USE_FINGERPRINT",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.WRITE_EXTERNAL_STORAGE",
+            "category": "sensitive",
+            "description_en": "Requests shared-storage writes; actual scope depends on Android version.",
+            "description_hi": "साझा स्टोरेज में लिखने की अनुमति माँगता है; दायरा एंड्रॉयड संस्करण पर निर्भर है।"
+          },
+          {
+            "name": "org.fossify.android.permission.WRITE_GLOBAL_SETTINGS",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          }
+        ],
+        "findings": [
+          {
+            "id": "sensitive-permissions",
+            "severity": "review",
+            "title_en": "Sensitive capabilities requested",
+            "title_hi": "संवेदनशील क्षमताएँ माँगी गई हैं",
+            "evidence": [
+              "android.permission.MANAGE_EXTERNAL_STORAGE",
+              "android.permission.REQUEST_INSTALL_PACKAGES",
+              "android.permission.WRITE_EXTERNAL_STORAGE"
+            ],
+            "explanation_en": "Check whether these permissions are necessary for the app's purpose. A declaration is not evidence that access was granted or abused.",
+            "explanation_hi": "जाँचें कि ये अनुमतियाँ ऐप के काम के लिए ज़रूरी हैं या नहीं। घोषणा से यह साबित नहीं होता कि पहुँच मिली या उसका दुरुपयोग हुआ।"
+          }
+        ],
+        "coverage": {
+          "manifest": true,
+          "signature": true,
+          "dex": false,
+          "notes": [
+            "Static inspection only; the APK was not installed or executed.",
+            "Declared permissions are capabilities, not observed grants or behavior.",
+            "DEX behavior, remote code, network security resources, and signer rotation lineage are not assessed.",
+            "No findings does not establish that an app is safe."
+          ]
+        },
+        "analyzed_at": "2026-10-11T14:32:43.789714+00:00"
+      }
+    },
+    {
+      "id": "exodus",
+      "name": "Exodus spyware",
+      "classification": "documented-malware-sample",
+      "release": "2019 historical research specimen",
+      "license": "Not established for malicious binary",
+      "source_url": "https://github.com/sk3ptre/AndroidMalware_2019/blob/eef650faedacb06f11a778fb1e3a18bae4e5af36/README.md",
+      "license_url": "https://github.com/sk3ptre/AndroidMalware_2019/blob/eef650faedacb06f11a778fb1e3a18bae4e5af36/README.md",
+      "download_url": null,
+      "malware_family": "Exodus One",
+      "evidence_confidence": "primary-report-hash-match",
+      "evidence_urls": [
+        "https://github.com/securitywithoutborders/website/blob/f5d6c338a4dd373720dcaea2b138250fce6b3bb5/source/blog/posts/2019-03-29-exodus.html.markdown",
+        "https://github.com/sk3ptre/AndroidMalware_2019/blob/eef650faedacb06f11a778fb1e3a18bae4e5af36/README.md"
+      ],
+      "evidence_hash": {
+        "algorithm": "sha256",
+        "value": "0f5f1409b1ebbee4aa837d20479732e11399d37f05b47b5359dc53a4001314e5"
+      },
+      "ground_truth_note": "Exact file digest matches the original research report IOC. The malicious classification comes from that research, not from permission heuristics. Static analysis only; behavior was not reproduced.",
+      "redistribution": "Metadata only; malicious APKs are not redistributed.",
+      "report": {
+        "schema_version": 1,
+        "apk_sha256": "0f5f1409b1ebbee4aa837d20479732e11399d37f05b47b5359dc53a4001314e5",
+        "file_size": 2025822,
+        "package_name": "operatore.italia",
+        "version_name": "5.1.1.5",
+        "version_code": 5115,
+        "app_name": "Sincronizzazione Contatti Android",
+        "signature": {
+          "status": "verified",
+          "signer_sha256": [
+            "40c43d4b2f541c59dd87270cee63f4e362b16f41e83f3bd320033a39460614c0"
+          ],
+          "schemes": [
+            "v1",
+            "v2"
+          ],
+          "errors": []
+        },
+        "permissions": [
+          {
+            "name": "android.permission.ACCESS_COARSE_LOCATION",
+            "category": "sensitive",
+            "description_en": "Requests approximate location access.",
+            "description_hi": "अनुमानित स्थान तक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.ACCESS_FINE_LOCATION",
+            "category": "sensitive",
+            "description_en": "Requests precise location access.",
+            "description_hi": "सटीक स्थान तक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.ACCESS_NETWORK_STATE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.INTERNET",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.READ_CALL_LOG",
+            "category": "sensitive",
+            "description_en": "Requests access to call history.",
+            "description_hi": "कॉल इतिहास तक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.READ_CONTACTS",
+            "category": "sensitive",
+            "description_en": "Requests access to contacts.",
+            "description_hi": "संपर्कों तक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.READ_EXTERNAL_STORAGE",
+            "category": "sensitive",
+            "description_en": "Requests access to shared files; actual scope depends on Android version.",
+            "description_hi": "साझा फ़ाइलों तक पहुँच माँगता है; वास्तविक दायरा एंड्रॉयड संस्करण पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.READ_PHONE_STATE",
+            "category": "sensitive",
+            "description_en": "Requests access to phone state and related device information.",
+            "description_hi": "फ़ोन की स्थिति और संबंधित जानकारी तक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.READ_SMS",
+            "category": "sensitive",
+            "description_en": "Requests access to read SMS messages.",
+            "description_hi": "एसएमएस संदेश पढ़ने की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.RECEIVE_BOOT_COMPLETED",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.RECEIVE_SMS",
+            "category": "sensitive",
+            "description_en": "Requests access to receive SMS messages.",
+            "description_hi": "एसएमएस संदेश प्राप्त करने की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.RECORD_AUDIO",
+            "category": "sensitive",
+            "description_en": "Requests microphone access.",
+            "description_hi": "माइक्रोफ़ोन तक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.WRITE_EXTERNAL_STORAGE",
+            "category": "sensitive",
+            "description_en": "Requests shared-storage writes; actual scope depends on Android version.",
+            "description_hi": "साझा स्टोरेज में लिखने की अनुमति माँगता है; दायरा एंड्रॉयड संस्करण पर निर्भर है।"
+          }
+        ],
+        "findings": [
+          {
+            "id": "sensitive-permissions",
+            "severity": "review",
+            "title_en": "Sensitive capabilities requested",
+            "title_hi": "संवेदनशील क्षमताएँ माँगी गई हैं",
+            "evidence": [
+              "android.permission.ACCESS_COARSE_LOCATION",
+              "android.permission.ACCESS_FINE_LOCATION",
+              "android.permission.READ_CALL_LOG",
+              "android.permission.READ_CONTACTS",
+              "android.permission.READ_EXTERNAL_STORAGE",
+              "android.permission.READ_PHONE_STATE",
+              "android.permission.READ_SMS",
+              "android.permission.RECEIVE_SMS",
+              "android.permission.RECORD_AUDIO",
+              "android.permission.WRITE_EXTERNAL_STORAGE"
+            ],
+            "explanation_en": "Check whether these permissions are necessary for the app's purpose. A declaration is not evidence that access was granted or abused.",
+            "explanation_hi": "जाँचें कि ये अनुमतियाँ ऐप के काम के लिए ज़रूरी हैं या नहीं। घोषणा से यह साबित नहीं होता कि पहुँच मिली या उसका दुरुपयोग हुआ।"
+          },
+          {
+            "id": "legacy-target",
+            "severity": "review",
+            "title_en": "Older Android protections targeted",
+            "title_hi": "पुरानी एंड्रॉयड सुरक्षा लक्षित है",
+            "evidence": [
+              "targetSdkVersion=11"
+            ],
+            "explanation_en": "An older target SDK can retain legacy platform behavior. This is a compatibility indicator, not proof of harmful activity.",
+            "explanation_hi": "पुराने टारगेट एसडीके से पुराना प्लेटफ़ॉर्म व्यवहार रह सकता है। यह संगतता संकेत है, हानिकारक गतिविधि का प्रमाण नहीं।"
+          }
+        ],
+        "coverage": {
+          "manifest": true,
+          "signature": true,
+          "dex": false,
+          "notes": [
+            "Static inspection only; the APK was not installed or executed.",
+            "Declared permissions are capabilities, not observed grants or behavior.",
+            "DEX behavior, remote code, network security resources, and signer rotation lineage are not assessed.",
+            "No findings does not establish that an app is safe."
+          ]
+        },
+        "analyzed_at": "2026-10-11T14:32:47.396083+00:00"
+      }
+    },
+    {
+      "id": "clipper",
+      "name": "Fake MetaMask clipper",
+      "classification": "documented-malware-sample",
+      "release": "2019 historical research specimen",
+      "license": "Not established for malicious binary",
+      "source_url": "https://github.com/sk3ptre/AndroidMalware_2019/blob/eef650faedacb06f11a778fb1e3a18bae4e5af36/README.md",
+      "license_url": "https://github.com/sk3ptre/AndroidMalware_2019/blob/eef650faedacb06f11a778fb1e3a18bae4e5af36/README.md",
+      "download_url": null,
+      "malware_family": "Android/Clipper.C",
+      "evidence_confidence": "primary-report-hash-match",
+      "evidence_urls": [
+        "https://www.welivesecurity.com/2019/02/08/first-clipper-malware-google-play/",
+        "https://github.com/sk3ptre/AndroidMalware_2019/blob/eef650faedacb06f11a778fb1e3a18bae4e5af36/README.md"
+      ],
+      "evidence_hash": {
+        "algorithm": "md5",
+        "value": "24d7783aaf34884677a601d487473f88"
+      },
+      "ground_truth_note": "Exact file digest matches the original research report IOC. The malicious classification comes from that research, not from permission heuristics. Static analysis only; behavior was not reproduced.",
+      "redistribution": "Metadata only; malicious APKs are not redistributed.",
+      "report": {
+        "schema_version": 1,
+        "apk_sha256": "86507924e47908aded888026991cd03959d1c1b171f32c8cc3ce62c4c45374ef",
+        "file_size": 1666679,
+        "package_name": "com.lemon.metamask",
+        "version_name": "1.1",
+        "version_code": 11,
+        "app_name": "MetaMask",
+        "signature": {
+          "status": "verified",
+          "signer_sha256": [
+            "b76ac83b57702383cbdf616179e7d78e37590e3d7a9b3de86ab1320cf744c30d"
+          ],
+          "schemes": [
+            "v1",
+            "v2",
+            "v3"
+          ],
+          "errors": []
+        },
+        "permissions": [
+          {
+            "name": "android.permission.ACCESS_NETWORK_STATE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.INTERNET",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.WRITE_EXTERNAL_STORAGE",
+            "category": "sensitive",
+            "description_en": "Requests shared-storage writes; actual scope depends on Android version.",
+            "description_hi": "साझा स्टोरेज में लिखने की अनुमति माँगता है; दायरा एंड्रॉयड संस्करण पर निर्भर है।"
+          }
+        ],
+        "findings": [
+          {
+            "id": "sensitive-permissions",
+            "severity": "review",
+            "title_en": "Sensitive capabilities requested",
+            "title_hi": "संवेदनशील क्षमताएँ माँगी गई हैं",
+            "evidence": [
+              "android.permission.WRITE_EXTERNAL_STORAGE"
+            ],
+            "explanation_en": "Check whether these permissions are necessary for the app's purpose. A declaration is not evidence that access was granted or abused.",
+            "explanation_hi": "जाँचें कि ये अनुमतियाँ ऐप के काम के लिए ज़रूरी हैं या नहीं। घोषणा से यह साबित नहीं होता कि पहुँच मिली या उसका दुरुपयोग हुआ।"
+          },
+          {
+            "id": "legacy-target",
+            "severity": "review",
+            "title_en": "Older Android protections targeted",
+            "title_hi": "पुरानी एंड्रॉयड सुरक्षा लक्षित है",
+            "evidence": [
+              "targetSdkVersion=27"
+            ],
+            "explanation_en": "An older target SDK can retain legacy platform behavior. This is a compatibility indicator, not proof of harmful activity.",
+            "explanation_hi": "पुराने टारगेट एसडीके से पुराना प्लेटफ़ॉर्म व्यवहार रह सकता है। यह संगतता संकेत है, हानिकारक गतिविधि का प्रमाण नहीं।"
+          }
+        ],
+        "coverage": {
+          "manifest": true,
+          "signature": true,
+          "dex": false,
+          "notes": [
+            "Static inspection only; the APK was not installed or executed.",
+            "Declared permissions are capabilities, not observed grants or behavior.",
+            "DEX behavior, remote code, network security resources, and signer rotation lineage are not assessed.",
+            "No findings does not establish that an app is safe."
+          ]
+        },
+        "analyzed_at": "2026-10-11T14:32:48.685929+00:00"
+      }
+    },
+    {
+      "id": "faketurk",
+      "name": "Fake BtcTurk phishing",
+      "classification": "documented-malware-sample",
+      "release": "2019 historical research specimen",
+      "license": "Not established for malicious binary",
+      "source_url": "https://github.com/sk3ptre/AndroidMalware_2019/blob/eef650faedacb06f11a778fb1e3a18bae4e5af36/README.md",
+      "license_url": "https://github.com/sk3ptre/AndroidMalware_2019/blob/eef650faedacb06f11a778fb1e3a18bae4e5af36/README.md",
+      "download_url": null,
+      "malware_family": "Android/FakeApp.KP",
+      "evidence_confidence": "primary-report-hash-match",
+      "evidence_urls": [
+        "https://www.welivesecurity.com/2019/06/17/malware-google-permissions-2fa-bypass/",
+        "https://github.com/sk3ptre/AndroidMalware_2019/blob/eef650faedacb06f11a778fb1e3a18bae4e5af36/README.md"
+      ],
+      "evidence_hash": {
+        "algorithm": "md5",
+        "value": "336ce9cdf788228a71a3757558faa012"
+      },
+      "ground_truth_note": "Exact file digest matches the original research report IOC. The malicious classification comes from that research, not from permission heuristics. Static analysis only; behavior was not reproduced.",
+      "redistribution": "Metadata only; malicious APKs are not redistributed.",
+      "report": {
+        "schema_version": 1,
+        "apk_sha256": "3d955b203921ccb24888ccbdda536bba778694ab05cdf9fad088bd0f60bf8fc0",
+        "file_size": 2230595,
+        "package_name": "com.app.elipticsoft.app",
+        "version_name": "6.1",
+        "version_code": 10,
+        "app_name": "BtcTurk",
+        "signature": {
+          "status": "verified",
+          "signer_sha256": [
+            "4cff69baf03311560ee8d4bcb2cadc757487ee5e8029db35952a0eb3ba60bca8"
+          ],
+          "schemes": [
+            "v1",
+            "v2"
+          ],
+          "errors": []
+        },
+        "permissions": [
+          {
+            "name": "android.permission.ACCESS_NETWORK_STATE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.BIND_NOTIFICATION_LISTENER_SERVICE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.INTERNET",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.WAKE_LOCK",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "com.google.android.c2dm.permission.RECEIVE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          }
+        ],
+        "findings": [
+          {
+            "id": "legacy-target",
+            "severity": "review",
+            "title_en": "Older Android protections targeted",
+            "title_hi": "पुरानी एंड्रॉयड सुरक्षा लक्षित है",
+            "evidence": [
+              "targetSdkVersion=27"
+            ],
+            "explanation_en": "An older target SDK can retain legacy platform behavior. This is a compatibility indicator, not proof of harmful activity.",
+            "explanation_hi": "पुराने टारगेट एसडीके से पुराना प्लेटफ़ॉर्म व्यवहार रह सकता है। यह संगतता संकेत है, हानिकारक गतिविधि का प्रमाण नहीं।"
+          }
+        ],
+        "coverage": {
+          "manifest": true,
+          "signature": true,
+          "dex": false,
+          "notes": [
+            "Static inspection only; the APK was not installed or executed.",
+            "Declared permissions are capabilities, not observed grants or behavior.",
+            "DEX behavior, remote code, network security resources, and signer rotation lineage are not assessed.",
+            "No findings does not establish that an app is safe."
+          ]
+        },
+        "analyzed_at": "2026-10-11T14:32:50.171651+00:00"
+      }
+    },
+    {
+      "id": "faketurkbeta",
+      "name": "Fake BtcTurk beta",
+      "classification": "documented-malware-sample",
+      "release": "2019 historical research specimen",
+      "license": "Not established for malicious binary",
+      "source_url": "https://github.com/sk3ptre/AndroidMalware_2019/blob/eef650faedacb06f11a778fb1e3a18bae4e5af36/README.md",
+      "license_url": "https://github.com/sk3ptre/AndroidMalware_2019/blob/eef650faedacb06f11a778fb1e3a18bae4e5af36/README.md",
+      "download_url": null,
+      "malware_family": "Android/FakeApp.KP",
+      "evidence_confidence": "primary-report-hash-match",
+      "evidence_urls": [
+        "https://www.welivesecurity.com/2019/06/17/malware-google-permissions-2fa-bypass/",
+        "https://github.com/sk3ptre/AndroidMalware_2019/blob/eef650faedacb06f11a778fb1e3a18bae4e5af36/README.md"
+      ],
+      "evidence_hash": {
+        "algorithm": "md5",
+        "value": "8c93cf8859e3ed350b7c8722e4a8f9a3"
+      },
+      "ground_truth_note": "Exact file digest matches the original research report IOC. The malicious classification comes from that research, not from permission heuristics. Static analysis only; behavior was not reproduced.",
+      "redistribution": "Metadata only; malicious APKs are not redistributed.",
+      "report": {
+        "schema_version": 1,
+        "apk_sha256": "126547985987c3ecb1321a3a565d8565b64d437fd28418a6ba4bbc3220f684d2",
+        "file_size": 3038784,
+        "package_name": "btcturk.pro.beta",
+        "version_name": "BTCTurk Pro Beta V0.1",
+        "version_code": 1,
+        "app_name": "BTCTurk Pro Beta",
+        "signature": {
+          "status": "verified",
+          "signer_sha256": [
+            "37dcac2d78454d039b2824fdfbb00e3d27a575e9a8bfe3c30cf98f68af4ffb37"
+          ],
+          "schemes": [
+            "v1",
+            "v2",
+            "v3"
+          ],
+          "errors": []
+        },
+        "permissions": [
+          {
+            "name": "android.permission.ACCESS_NETWORK_STATE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.INTERNET",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.READ_PHONE_STATE",
+            "category": "sensitive",
+            "description_en": "Requests access to phone state and related device information.",
+            "description_hi": "फ़ोन की स्थिति और संबंधित जानकारी तक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.RECEIVE_BOOT_COMPLETED",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.WAKE_LOCK",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "btcturk.pro.beta.permission.C2D_MESSAGE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "com.google.android.c2dm.permission.RECEIVE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          }
+        ],
+        "findings": [
+          {
+            "id": "sensitive-permissions",
+            "severity": "review",
+            "title_en": "Sensitive capabilities requested",
+            "title_hi": "संवेदनशील क्षमताएँ माँगी गई हैं",
+            "evidence": [
+              "android.permission.READ_PHONE_STATE"
+            ],
+            "explanation_en": "Check whether these permissions are necessary for the app's purpose. A declaration is not evidence that access was granted or abused.",
+            "explanation_hi": "जाँचें कि ये अनुमतियाँ ऐप के काम के लिए ज़रूरी हैं या नहीं। घोषणा से यह साबित नहीं होता कि पहुँच मिली या उसका दुरुपयोग हुआ।"
+          }
+        ],
+        "coverage": {
+          "manifest": true,
+          "signature": true,
+          "dex": false,
+          "notes": [
+            "Static inspection only; the APK was not installed or executed.",
+            "Declared permissions are capabilities, not observed grants or behavior.",
+            "DEX behavior, remote code, network security resources, and signer rotation lineage are not assessed.",
+            "No findings does not establish that an app is safe."
+          ]
+        },
+        "analyzed_at": "2026-10-11T14:32:51.791866+00:00"
+      }
+    },
+    {
+      "id": "fakekoineks",
+      "name": "Fake Koineks phishing",
+      "classification": "documented-malware-sample",
+      "release": "2019 historical research specimen",
+      "license": "Not established for malicious binary",
+      "source_url": "https://github.com/sk3ptre/AndroidMalware_2019/blob/eef650faedacb06f11a778fb1e3a18bae4e5af36/README.md",
+      "license_url": "https://github.com/sk3ptre/AndroidMalware_2019/blob/eef650faedacb06f11a778fb1e3a18bae4e5af36/README.md",
+      "download_url": null,
+      "malware_family": "Android/FakeApp.KP",
+      "evidence_confidence": "primary-report-hash-match",
+      "evidence_urls": [
+        "https://www.welivesecurity.com/2019/06/17/malware-google-permissions-2fa-bypass/",
+        "https://github.com/sk3ptre/AndroidMalware_2019/blob/eef650faedacb06f11a778fb1e3a18bae4e5af36/README.md"
+      ],
+      "evidence_hash": {
+        "algorithm": "md5",
+        "value": "4c0b9a665a5a1f5dccb67cc7ec18da54"
+      },
+      "ground_truth_note": "Exact file digest matches the original research report IOC. The malicious classification comes from that research, not from permission heuristics. Static analysis only; behavior was not reproduced.",
+      "redistribution": "Metadata only; malicious APKs are not redistributed.",
+      "report": {
+        "schema_version": 1,
+        "apk_sha256": "dbfab6e6fe3c2af3c8e23476b507eebed3cbe05633ab98fcb421ed156aa34236",
+        "file_size": 3241932,
+        "package_name": "com.koinks.mobilpro",
+        "version_name": "1.4",
+        "version_code": 4,
+        "app_name": "Koineks",
+        "signature": {
+          "status": "verified",
+          "signer_sha256": [
+            "0a8a74284bbf521351d5cc9cb02704f2e8ed0d7866de81fa5f3e44e03c28b3df"
+          ],
+          "schemes": [
+            "v1",
+            "v2",
+            "v3"
+          ],
+          "errors": []
+        },
+        "permissions": [
+          {
+            "name": "android.permission.ACCESS_NETWORK_STATE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.INTERNET",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.READ_PHONE_STATE",
+            "category": "sensitive",
+            "description_en": "Requests access to phone state and related device information.",
+            "description_hi": "फ़ोन की स्थिति और संबंधित जानकारी तक पहुँच की अनुमति माँगता है।"
+          },
+          {
+            "name": "android.permission.RECEIVE_BOOT_COMPLETED",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "android.permission.WAKE_LOCK",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "com.google.android.c2dm.permission.RECEIVE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          },
+          {
+            "name": "com.koinks.mobilpro.permission.C2D_MESSAGE",
+            "category": "standard",
+            "description_en": "Declared permission. Its effect depends on Android enforcement and runtime grants.",
+            "description_hi": "घोषित अनुमति। इसका प्रभाव एंड्रॉयड और रनटाइम स्वीकृति पर निर्भर है।"
+          }
+        ],
+        "findings": [
+          {
+            "id": "sensitive-permissions",
+            "severity": "review",
+            "title_en": "Sensitive capabilities requested",
+            "title_hi": "संवेदनशील क्षमताएँ माँगी गई हैं",
+            "evidence": [
+              "android.permission.READ_PHONE_STATE"
+            ],
+            "explanation_en": "Check whether these permissions are necessary for the app's purpose. A declaration is not evidence that access was granted or abused.",
+            "explanation_hi": "जाँचें कि ये अनुमतियाँ ऐप के काम के लिए ज़रूरी हैं या नहीं। घोषणा से यह साबित नहीं होता कि पहुँच मिली या उसका दुरुपयोग हुआ।"
+          }
+        ],
+        "coverage": {
+          "manifest": true,
+          "signature": true,
+          "dex": false,
+          "notes": [
+            "Static inspection only; the APK was not installed or executed.",
+            "Declared permissions are capabilities, not observed grants or behavior.",
+            "DEX behavior, remote code, network security resources, and signer rotation lineage are not assessed.",
+            "No findings does not establish that an app is safe."
+          ]
+        },
+        "analyzed_at": "2026-10-11T14:32:53.388572+00:00"
       }
     },
     {
@@ -484,7 +1239,7 @@
             "No findings does not establish that an app is safe."
           ]
         },
-        "analyzed_at": "2026-10-11T13:50:39.692399+00:00"
+        "analyzed_at": "2026-10-11T14:32:54.796775+00:00"
       }
     },
     {
@@ -643,7 +1398,7 @@
             "No findings does not establish that an app is safe."
           ]
         },
-        "analyzed_at": "2026-10-11T13:50:40.191426+00:00"
+        "analyzed_at": "2026-10-11T14:32:56.408307+00:00"
       }
     }
   ]

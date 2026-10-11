@@ -1,7 +1,7 @@
-import {describe,it,expect,beforeEach} from 'vitest';
+import {describe,it,expect,beforeEach,afterEach,vi} from 'vitest';
 import {addr,bytes32,str,u64,key} from '@arkiv-network/sdk/attr';
 import {sha256,stringToHex} from 'viem';
-import {APP_ID,configureArkiv,decodePublicRecord,resolveRecords,buildEntityInput,type RecordPayload,type PublicRecord} from './index';
+import {APP_ID,configureArkiv,decodePublicRecord,resolveRecords,buildEntityInput,isRelevantRecordEvent,listPublicRecords,type RecordPayload,type PublicRecord} from './index';
 const reviewer='0x1111111111111111111111111111111111111111';
 const stranger='0x2222222222222222222222222222222222222222';
 const digest='a'.repeat(64),signer='b'.repeat(64),pkg='dev.scamsignal.fixture';
@@ -11,6 +11,32 @@ function entity(p:RecordPayload=payload){return {key:`0x${'c'.repeat(64)}`,creat
 function record(p:RecordPayload=payload):PublicRecord{return decodePublicRecord(entity(p),timing)!;}
 const report={apk_sha256:digest,package_name:pkg,signature:{status:'verified' as const,signer_sha256:[signer]}};
 beforeEach(()=>configureArkiv({trusted_creators:[reviewer]}));
+afterEach(()=>vi.unstubAllGlobals());
+
+describe('Shared network updates and quota failures',()=>{
+ it('ignores other projects but retains updates to trusted or transferred records',()=>{
+  const entityKey=`0x${'e'.repeat(64)}`;
+  expect(isRelevantRecordEvent({entityKey,owner:stranger})).toBe(false);
+  expect(isRelevantRecordEvent({entityKey,owner:reviewer})).toBe(true);
+  expect(isRelevantRecordEvent({entityKey,previousOwner:reviewer,newOwner:stranger})).toBe(true);
+  expect(isRelevantRecordEvent({entityKey,owner:stranger},new Set([entityKey]))).toBe(true);
+ });
+ it('surfaces exhausted quota without waiting for a long Retry-After',async()=>{
+  let queries=0;
+  vi.stubGlobal('fetch',vi.fn(async(_url,init)=>{
+   const request=JSON.parse(String(init.body));
+   if(request.method==='arkiv_getBlockTiming') return Response.json({jsonrpc:'2.0',id:request.id,result:{current_block:100,current_block_time:1791726650,duration:2}});
+   queries++;
+   return Response.json({error:{code:'ANON_COST_LIMITED',message:'quota exhausted'}},{status:429,headers:{'Retry-After':'3600'}});
+  }));
+  let deadline:ReturnType<typeof setTimeout>|undefined;
+  try {
+   const bounded=Promise.race([listPublicRecords({apk_sha256:digest}),new Promise((_,reject)=>{deadline=setTimeout(()=>reject(new Error('RPC quota retry did not finish promptly')),1000);})]);
+   await expect(bounded).rejects.not.toThrow('did not finish promptly');
+   expect(queries).toBe(1);
+  } finally {if(deadline)clearTimeout(deadline);}
+ });
+});
 describe('Protocol-authored trust and indexed artifact binding',()=>{
  it('accepts an approved live record and computes a real expiry',()=>{const r=record();expect(r.creator).toBe(reviewer);expect(Date.parse(r.expires_at)).toBe((timing.currentBlockTime+1800)*1000);});
  it('rejects a forged publisher regardless of identical trusted content',()=>expect(decodePublicRecord({...entity(),creator:stranger},timing)).toBeNull());

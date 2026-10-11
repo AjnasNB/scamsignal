@@ -1,5 +1,5 @@
 {
-  "tested_at": "2026-10-11T13:57:36.579039+00:00",
+  "tested_at": "2026-10-11T14:32:56.729748+00:00",
   "api_url": "https://scamsignal-api-20261011.azurewebsites.net",
   "health": {
     "status": "ok",
@@ -12,71 +12,187 @@
   "samples": [
     {
       "id": "keepassdx",
+      "classification": "upstream-open-source-release",
       "apk_sha256": "99dccd0c350be4a97dc7b90ccd3c83dfa41f8179f5db1a7c071c17cc0278cc3a",
       "package_name": "com.kunzisoft.keepass.libre",
       "signature": "verified",
       "permissions": 9,
+      "sensitive_permissions": 0,
       "finding_ids": [],
-      "seconds": 21.58,
+      "seconds": 6.2,
       "session_auth_checked": true,
       "delete_checked": true
     },
     {
       "id": "aegis",
+      "classification": "upstream-open-source-release",
       "apk_sha256": "fa091c91912c0d56ec3553394fac4158f9a9d178e93bcbb35419601d788cb528",
       "package_name": "com.beemdevelopment.aegis",
       "signature": "verified",
       "permissions": 6,
+      "sensitive_permissions": 1,
       "finding_ids": [
         "sensitive-permissions"
       ],
-      "seconds": 1.66,
+      "seconds": 1.69,
       "session_auth_checked": true,
       "delete_checked": true
     },
     {
       "id": "newpipe",
+      "classification": "upstream-open-source-release",
       "apk_sha256": "18447bfb1e06d113edc88df93f471827280de06f6f3d4dc42f56f28b9c1bab79",
       "package_name": "org.schabi.newpipe",
       "signature": "verified",
       "permissions": 11,
+      "sensitive_permissions": 2,
       "finding_ids": [
         "sensitive-permissions"
       ],
+      "seconds": 2.86,
+      "session_auth_checked": true,
+      "delete_checked": true
+    },
+    {
+      "id": "fossifycalculator",
+      "classification": "upstream-open-source-release",
+      "apk_sha256": "7c5443c22d6d62c67dfe80df33ea9161ff0fa440f92590bcb45d7008b57613ed",
+      "package_name": "org.fossify.math",
+      "signature": "verified",
+      "permissions": 1,
+      "sensitive_permissions": 0,
+      "finding_ids": [],
       "seconds": 2.31,
       "session_auth_checked": true,
       "delete_checked": true
     },
     {
-      "id": "insecurebank",
-      "apk_sha256": "b18af2a0e44d7634bbcdf93664d9c78a2695e050393fcfbb5e8b91f902d194a4",
-      "package_name": "com.android.insecurebankv2",
+      "id": "fossifyfiles",
+      "classification": "upstream-open-source-release",
+      "apk_sha256": "c2993c75ea7287e7ede354b061d9c8772aa9b4b050e7660ec1ebc3592dc3d051",
+      "package_name": "org.fossify.filemanager",
       "signature": "verified",
-      "permissions": 12,
+      "permissions": 6,
+      "sensitive_permissions": 3,
+      "finding_ids": [
+        "sensitive-permissions"
+      ],
+      "seconds": 2.33,
+      "session_auth_checked": true,
+      "delete_checked": true
+    },
+    {
+      "id": "exodus",
+      "classification": "documented-malware-sample",
+      "apk_sha256": "0f5f1409b1ebbee4aa837d20479732e11399d37f05b47b5359dc53a4001314e5",
+      "package_name": "operatore.italia",
+      "signature": "verified",
+      "permissions": 13,
+      "sensitive_permissions": 10,
       "finding_ids": [
         "sensitive-permissions",
-        "debuggable",
         "legacy-target"
+      ],
+      "seconds": 3.77,
+      "session_auth_checked": true,
+      "delete_checked": true
+    },
+    {
+      "id": "clipper",
+      "classification": "documented-malware-sample",
+      "apk_sha256": "86507924e47908aded888026991cd03959d1c1b171f32c8cc3ce62c4c45374ef",
+      "package_name": "com.lemon.metamask",
+      "signature": "verified",
+      "permissions": 3,
+      "sensitive_permissions": 1,
+      "finding_ids": [
+        "sensitive-permissions",
+        "legacy-target"
+      ],
+      "seconds": 1.44,
+      "session_auth_checked": true,
+      "delete_checked": true
+    },
+    {
+      "id": "faketurk",
+      "classification": "documented-malware-sample",
+      "apk_sha256": "3d955b203921ccb24888ccbdda536bba778694ab05cdf9fad088bd0f60bf8fc0",
+      "package_name": "com.app.elipticsoft.app",
+      "signature": "verified",
+      "permissions": 6,
+      "sensitive_permissions": 0,
+      "finding_ids": [
+        "legacy-target"
+      ],
+      "seconds": 1.53,
+      "session_auth_checked": true,
+      "delete_checked": true
+    },
+    {
+      "id": "faketurkbeta",
+      "classification": "documented-malware-sample",
+      "apk_sha256": "126547985987c3ecb1321a3a565d8565b64d437fd28418a6ba4bbc3220f684d2",
+      "package_name": "btcturk.pro.beta",
+      "signature": "verified",
+      "permissions": 8,
+      "sensitive_permissions": 1,
+      "finding_ids": [
+        "sensitive-permissions"
       ],
       "seconds": 1.47,
       "session_auth_checked": true,
       "delete_checked": true
     },
     {
-      "id": "pivaa",
-      "apk_sha256": "57887e1d1e119939eec0e929801b049f8037cf90d2accab479a48f0d4dd2c19a",
-      "package_name": "com.htbridge.pivaa",
+      "id": "fakekoineks",
+      "classification": "documented-malware-sample",
+      "apk_sha256": "dbfab6e6fe3c2af3c8e23476b507eebed3cbe05633ab98fcb421ed156aa34236",
+      "package_name": "com.koinks.mobilpro",
+      "signature": "verified",
+      "permissions": 8,
+      "sensitive_permissions": 1,
+      "finding_ids": [
+        "sensitive-permissions"
+      ],
+      "seconds": 1.58,
+      "session_auth_checked": true,
+      "delete_checked": true
+    },
+    {
+      "id": "insecurebank",
+      "classification": "intentionally-insecure-training-app",
+      "apk_sha256": "b18af2a0e44d7634bbcdf93664d9c78a2695e050393fcfbb5e8b91f902d194a4",
+      "package_name": "com.android.insecurebankv2",
       "signature": "verified",
       "permissions": 12,
+      "sensitive_permissions": 7,
       "finding_ids": [
         "sensitive-permissions",
         "debuggable",
         "legacy-target"
       ],
-      "seconds": 1.52,
+      "seconds": 1.55,
+      "session_auth_checked": true,
+      "delete_checked": true
+    },
+    {
+      "id": "pivaa",
+      "classification": "intentionally-insecure-training-app",
+      "apk_sha256": "57887e1d1e119939eec0e929801b049f8037cf90d2accab479a48f0d4dd2c19a",
+      "package_name": "com.htbridge.pivaa",
+      "signature": "verified",
+      "permissions": 12,
+      "sensitive_permissions": 8,
+      "finding_ids": [
+        "sensitive-permissions",
+        "debuggable",
+        "legacy-target"
+      ],
+      "seconds": 1.59,
       "session_auth_checked": true,
       "delete_checked": true
     }
   ],
-  "tokens_published": false
+  "tokens_published": false,
+  "malware_inputs": "Original encrypted research archives; in-memory static upload only; never installed or executed."
 }

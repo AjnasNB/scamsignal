@@ -80,11 +80,143 @@
       "tx_hash": "0xb4bc8c6886898a29ec2eac976406e231e18158310db179d6bddbcc35d9e95b80",
       "expires_at_block": "1043582",
       "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0xb4bc8c6886898a29ec2eac976406e231e18158310db179d6bddbcc35d9e95b80"
+    },
+    {
+      "sample_id": "fossifycalculator",
+      "kind": "passport",
+      "apk_sha256": "7c5443c22d6d62c67dfe80df33ea9161ff0fa440f92590bcb45d7008b57613ed",
+      "package_name": "org.fossify.math",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0x1b4fd9a2698149b4054bf59ff9811a516db570c11d7c6ca4d0471831ee7c2279",
+      "tx_hash": "0x96c1e1ad88b497204bb47ecdce855e5cc18b12cf8ff57e9b0cd9d1d282bd12e6",
+      "expires_at_block": "1735877",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x96c1e1ad88b497204bb47ecdce855e5cc18b12cf8ff57e9b0cd9d1d282bd12e6"
+    },
+    {
+      "sample_id": "fossifyfiles",
+      "kind": "passport",
+      "apk_sha256": "c2993c75ea7287e7ede354b061d9c8772aa9b4b050e7660ec1ebc3592dc3d051",
+      "package_name": "org.fossify.filemanager",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0x345ab98054fb16eece7f83bc4d8b3ab47a8da85819c6af4a3ac2c5dbe3bfac37",
+      "tx_hash": "0x0619dbc463825153328e2fca60710b379b593856c6ef7756f8c50df186020a14",
+      "expires_at_block": "1735880",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x0619dbc463825153328e2fca60710b379b593856c6ef7756f8c50df186020a14"
+    },
+    {
+      "sample_id": "exodus",
+      "kind": "passport",
+      "apk_sha256": "0f5f1409b1ebbee4aa837d20479732e11399d37f05b47b5359dc53a4001314e5",
+      "package_name": "operatore.italia",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0x3aa9169d8eec2e712613a22cb0e3ffa78c5c2d72c835806798c7918bc11b2ddd",
+      "tx_hash": "0x1b8f0fe3a6dfd4474e44a5c4ff6b137f53d56fb959b87dd754d94ba9b2f7f320",
+      "expires_at_block": "1735882",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x1b8f0fe3a6dfd4474e44a5c4ff6b137f53d56fb959b87dd754d94ba9b2f7f320"
+    },
+    {
+      "sample_id": "exodus",
+      "kind": "advisory",
+      "apk_sha256": "0f5f1409b1ebbee4aa837d20479732e11399d37f05b47b5359dc53a4001314e5",
+      "package_name": "operatore.italia",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0xbb467c99a10bea1651be3b85e5588bbfdcba70a5539d0759844c7249cbe6e2a4",
+      "tx_hash": "0x5dfb92d03b21891895b559d3067f6db82fe33ef5f021b5a52ce752ceeffff9d0",
+      "expires_at_block": "1044685",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x5dfb92d03b21891895b559d3067f6db82fe33ef5f021b5a52ce752ceeffff9d0"
+    },
+    {
+      "sample_id": "clipper",
+      "kind": "passport",
+      "apk_sha256": "86507924e47908aded888026991cd03959d1c1b171f32c8cc3ce62c4c45374ef",
+      "package_name": "com.lemon.metamask",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0x774b2f914211b1d0d8e234902083340f3732f09a546a91c78d90dd7c0e61f773",
+      "tx_hash": "0xa8a5622f6267cb6d4e42e2ceddf14de58fa0c3e43bef11140a86e6acd7d85d7c",
+      "expires_at_block": "1735887",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0xa8a5622f6267cb6d4e42e2ceddf14de58fa0c3e43bef11140a86e6acd7d85d7c"
+    },
+    {
+      "sample_id": "clipper",
+      "kind": "advisory",
+      "apk_sha256": "86507924e47908aded888026991cd03959d1c1b171f32c8cc3ce62c4c45374ef",
+      "package_name": "com.lemon.metamask",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0x05cdd119c17fe602b75e7cbb9ae56d3453cd07d61f2fc15cb30f945cb5d25fef",
+      "tx_hash": "0x2dc87952a73b83ee672ad20cdd6acf602d19d4aa2129369658e4a347960a5ca8",
+      "expires_at_block": "1044690",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x2dc87952a73b83ee672ad20cdd6acf602d19d4aa2129369658e4a347960a5ca8"
+    },
+    {
+      "sample_id": "faketurk",
+      "kind": "passport",
+      "apk_sha256": "3d955b203921ccb24888ccbdda536bba778694ab05cdf9fad088bd0f60bf8fc0",
+      "package_name": "com.app.elipticsoft.app",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0xd2e90440b14c029d626fa650e42398b660e0ce89ee31a2b802aa44d61ea9ac51",
+      "tx_hash": "0x540cca2e53bc901217d564c5adf7a806395765916af692d285947b758857d32f",
+      "expires_at_block": "1735892",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x540cca2e53bc901217d564c5adf7a806395765916af692d285947b758857d32f"
+    },
+    {
+      "sample_id": "faketurk",
+      "kind": "advisory",
+      "apk_sha256": "3d955b203921ccb24888ccbdda536bba778694ab05cdf9fad088bd0f60bf8fc0",
+      "package_name": "com.app.elipticsoft.app",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0xb1330f61e42f2b8cb760a7ced491e75ed2d514eee027be2e7a788f8446b98aa0",
+      "tx_hash": "0x668239e68425a53a1a1552cf261891b80a8f19f2fccb12f8b4dad907ecc66ac2",
+      "expires_at_block": "1044695",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x668239e68425a53a1a1552cf261891b80a8f19f2fccb12f8b4dad907ecc66ac2"
+    },
+    {
+      "sample_id": "faketurkbeta",
+      "kind": "passport",
+      "apk_sha256": "126547985987c3ecb1321a3a565d8565b64d437fd28418a6ba4bbc3220f684d2",
+      "package_name": "btcturk.pro.beta",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0xcd90a9cb9cbc3d4f4993eafcc9c6f98a6cb2d313d8ce5dd16884a22c7bffbf2f",
+      "tx_hash": "0xd7374572a04f31a2774fb9d188a92b243c6c0c56a7fb3ce334484b957c5b73bb",
+      "expires_at_block": "1735897",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0xd7374572a04f31a2774fb9d188a92b243c6c0c56a7fb3ce334484b957c5b73bb"
+    },
+    {
+      "sample_id": "faketurkbeta",
+      "kind": "advisory",
+      "apk_sha256": "126547985987c3ecb1321a3a565d8565b64d437fd28418a6ba4bbc3220f684d2",
+      "package_name": "btcturk.pro.beta",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0x3fc4645745cf23a1b98d85b78e1de9527ce9280cf6eb5ac3b806a2b45adfdb0b",
+      "tx_hash": "0x1e513629163537e4e3ba31356c4981f25b28b3a2dbf4e3341b5fc4953d5f01ff",
+      "expires_at_block": "1044700",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x1e513629163537e4e3ba31356c4981f25b28b3a2dbf4e3341b5fc4953d5f01ff"
+    },
+    {
+      "sample_id": "fakekoineks",
+      "kind": "passport",
+      "apk_sha256": "dbfab6e6fe3c2af3c8e23476b507eebed3cbe05633ab98fcb421ed156aa34236",
+      "package_name": "com.koinks.mobilpro",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0xe6184aec69e3653d0574f4ac05a81f4e4839976da96d4c00f76554f09148a439",
+      "tx_hash": "0x999d6bfbdf3236bdd5094dae6975eab98d3a6fefd92b9760c0de9d5639c0f6ac",
+      "expires_at_block": "1735904",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x999d6bfbdf3236bdd5094dae6975eab98d3a6fefd92b9760c0de9d5639c0f6ac"
+    },
+    {
+      "sample_id": "fakekoineks",
+      "kind": "advisory",
+      "apk_sha256": "dbfab6e6fe3c2af3c8e23476b507eebed3cbe05633ab98fcb421ed156aa34236",
+      "package_name": "com.koinks.mobilpro",
+      "creator": "0xd153C0cC313884DA0065615BB411Dfb8b873fE54",
+      "entity_key": "0x1d615acf3bd273385a49126a39c6ec5664827d646478544775bee668a7c937eb",
+      "tx_hash": "0x4484a835acf1637028f4b40be6d46ef4c0c3ecfbd4573030059e3e859c77160f",
+      "expires_at_block": "1044707",
+      "tx_url": "https://tiramisu.explorer.arkiv.network/tx/0x4484a835acf1637028f4b40be6d46ef4c0c3ecfbd4573030059e3e859c77160f"
     }
   ],
-  "published_at": "2026-10-11T14:01:59.698Z",
-  "verified_at": "2026-10-11T14:02:00.369Z",
-  "live_query": "app_id = str('scamsignal-v1') AND schema_version = u64(1) AND $expiresAt > u64(438783) AND $creator = addr(0xd153C0cC313884DA0065615BB411Dfb8b873fE54)",
-  "verified_record_count": 7,
-  "read_block": "438784"
+  "published_at": "2026-10-11T14:39:29.774Z",
+  "verified_at": "2026-10-11T14:39:34.281Z",
+  "live_query": "app_id = str('scamsignal-v1') AND schema_version = u64(1) AND $expiresAt > u64(439910) AND $creator = addr(0xd153C0cC313884DA0065615BB411Dfb8b873fE54)",
+  "verified_record_count": 19,
+  "read_block": "439911"
 }

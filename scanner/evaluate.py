@@ -1,4 +1,4 @@
-"""Reproduce the five-app static evaluation; inputs remain private and untracked."""
+"""Reproduce release/training static evaluation; inputs remain private and untracked."""
 from __future__ import annotations
 
 import argparse
@@ -15,6 +15,8 @@ SAMPLES = [
     {"id": "newpipe", "name": "NewPipe", "classification": "upstream-open-source-release", "release": "0.29.1", "license": "GPL-3.0", "source_url": "https://github.com/TeamNewPipe/NewPipe/releases/tag/v0.29.1", "license_url": "https://github.com/TeamNewPipe/NewPipe/blob/dev/LICENSE", "download_url": "https://github.com/TeamNewPipe/NewPipe/releases/download/v0.29.1/NewPipe_v0.29.1.apk"},
     {"id": "insecurebank", "name": "InsecureBankv2", "classification": "intentionally-insecure-training-app", "release": "repository commit 3c8cc3a", "license": "MIT", "source_url": "https://github.com/dineshshetty/Android-InsecureBankv2/tree/3c8cc3a3ce45ed56d0f58f236b541b41f992e51f", "license_url": "https://github.com/dineshshetty/Android-InsecureBankv2/blob/master/LICENSE", "download_url": "https://raw.githubusercontent.com/dineshshetty/Android-InsecureBankv2/3c8cc3a3ce45ed56d0f58f236b541b41f992e51f/InsecureBankv2.apk"},
     {"id": "pivaa", "name": "PIVAA", "classification": "intentionally-insecure-training-app", "release": "repository commit 7fde895", "license": "GPL-3.0", "source_url": "https://github.com/HTBridge/pivaa/tree/7fde8956083ec4c6023c75f013f72023d60eda12", "license_url": "https://github.com/HTBridge/pivaa/blob/master/LICENSE", "download_url": "https://raw.githubusercontent.com/HTBridge/pivaa/7fde8956083ec4c6023c75f013f72023d60eda12/apks/pivaa.apk"},
+    {"id": "fossifycalculator", "name": "Fossify Calculator", "classification": "upstream-open-source-release", "release": "1.4.0", "license": "GPL-3.0", "source_url": "https://github.com/FossifyOrg/Calculator/releases/tag/1.4.0", "license_url": "https://github.com/FossifyOrg/Calculator/blob/main/LICENSE", "download_url": "https://github.com/FossifyOrg/Calculator/releases/download/1.4.0/calculator-10-foss-release.apk"},
+    {"id": "fossifyfiles", "name": "Fossify File Manager", "classification": "upstream-open-source-release", "release": "1.6.2", "license": "GPL-3.0", "source_url": "https://github.com/FossifyOrg/File-Manager/releases/tag/1.6.2", "license_url": "https://github.com/FossifyOrg/File-Manager/blob/main/LICENSE", "download_url": "https://github.com/FossifyOrg/File-Manager/releases/download/1.6.2/file-manager-14-foss-release.apk"},
 ]
 
 
@@ -22,6 +24,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--download", action="store_true", help="Download upstream samples into ignored .local/samples only.")
     parser.add_argument("--cached-reports", action="store_true", help="Assemble reports from an earlier measured run.")
+    parser.add_argument("--output", type=Path, help="Write the reproduced metadata here; defaults to ignored .local/results/evaluation-reproduced.json.")
     args = parser.parse_args()
     root = Path(__file__).resolve().parent.parent
     samples_dir = root / ".local" / "samples"
@@ -51,10 +54,12 @@ def main():
         "schema_version": 1,
         "evaluated_at": datetime.now(timezone.utc).isoformat(),
         "method": "Androguard 4.1.4 static manifest parsing + Android Build Tools 35.0.0 apksigner signature verification. APKs were not installed or executed.",
-        "limitations": ["Five samples demonstrate integration behavior, not detection accuracy.", "Valid signatures establish identity, not publisher legitimacy or safety.", "Declared permissions are capabilities; grants, actual behavior, remote code, DEX behavior and signing lineage are not assessed.", "Two risky cases are purpose-built training apps, not real-world malicious APKs.", "APK binaries and embedded personal strings are excluded from this publication."],
+        "limitations": ["Seven release/training samples demonstrate integration behavior, not detection accuracy.", "Valid signatures establish identity, not publisher legitimacy or safety.", "Declared permissions are capabilities; grants, actual behavior, remote code, DEX behavior and signing lineage are not assessed.", "Two risky cases are purpose-built training apps, not real-world malicious APKs.", "APK binaries and embedded personal strings are excluded from this publication."],
         "samples": records,
     }
-    (root / "scanner" / "evaluation.json").write_text(json.dumps(evaluation, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    output_path = args.output or results_dir / "evaluation-reproduced.json"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(evaluation, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (samples_dir / "manifest.json").write_text(json.dumps([{**s, "apk_sha256": r["report"]["apk_sha256"]} for s, r in zip(SAMPLES, records)], indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"samples": len(records), "signatures_verified": sum(s["report"]["signature"]["status"] == "verified" for s in records)}))
 
