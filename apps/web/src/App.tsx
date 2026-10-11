@@ -2809,6 +2809,12 @@ function PublishForm({ language }: { language: Language }) {
             <option value="open_source_release">
               {tr("Open source release", "ओपन सोर्स रिलीज़")}
             </option>
+            <option value="documented_malware_sample">
+              {tr(
+                "Documented historical malware sample",
+                "दस्तावेज़ित ऐतिहासिक मैलवेयर नमूना",
+              )}
+            </option>
             <option value="insecure_training_app">
               {tr("Insecure training application", "असुरक्षित प्रशिक्षण ऐप")}
             </option>

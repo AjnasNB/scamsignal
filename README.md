@@ -77,7 +77,7 @@ Tiramisu chain ID is **7738577**. Browser HTTP reads use the same-origin `/api/a
 
 The public policy at [`apps/web/public/data/trust-policy.json`](apps/web/public/data/trust-policy.json) defines accepted **creator** addresses. The client validates protocol metadata and typed attributes against the payload. A publisher name inside JSON is never proof of authorship. An empty policy does not accept arbitrary writers.
 
-- `passport`: reviewed release identity, exact APK hash, signing certificate fingerprints, and source reference.
+- `passport`: reviewed artifact identity, exact APK hash, signing certificate fingerprints, and source reference.
 - `advisory`: a scoped warning about an exact APK hash, with evidence and provenance.
 - `correction`: an original creator's authorized retraction of a target passport or advisory.
 

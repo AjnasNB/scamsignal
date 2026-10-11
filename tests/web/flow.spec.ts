@@ -1,6 +1,10 @@
 import { test, expect, type Page } from "@playwright/test";
 import { createHash } from "node:crypto";
 import type { ScanReport } from "../../apps/web/src/types";
+import {
+  buildEntityInput,
+  type PublishInput,
+} from "../../packages/arkiv-client/src/index";
 
 const fileBytes = Buffer.from("Harmless browser upload test fixture");
 const report: ScanReport = {
@@ -216,6 +220,8 @@ async function mockRecordClient(page: Page) {
         window.__notifyViewerRecords=onChange;window.__failViewerStream=onError;
         return ()=>{window.__notifyViewerRecords=undefined;window.__failViewerStream=undefined};
       }
+      export async function connectReviewer(){return '0x'+'1'.repeat(40);}
+      export async function publishRecord(input){window.__publishedFixture=input;return {entityKey:'0x'+'d'.repeat(64),txHash:'0x'+'e'.repeat(64)};}
     `,
     }),
   );
@@ -625,7 +631,19 @@ test("a documented phishing sample keeps reviewer context visible with zero sens
               ...report,
               package_name: "com.app.elipticsoft.app",
               permissions: [],
-              findings: [],
+              findings: [
+                {
+                  id: "target-sdk",
+                  severity: "review",
+                  title_en: "Older Android protections targeted",
+                  title_hi: "पुरानी एंड्रॉयड सुरक्षा लक्षित है",
+                  evidence: ["targetSdkVersion = 27"],
+                  explanation_en:
+                    "An older target SDK can retain legacy platform behavior. This is a compatibility indicator, not proof of harmful activity.",
+                  explanation_hi:
+                    "पुराने टारगेट SDK से पुराना प्लेटफॉर्म व्यवहार बना रह सकता है। यह संगतता संकेत है, हानिकारक गतिविधि का प्रमाण नहीं।",
+                },
+              ],
             },
           },
         ],
@@ -662,4 +680,104 @@ test("a documented phishing sample keeps reviewer context visible with zero sens
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBeTruthy();
+  for (const language of ["en", "hi"]) {
+    if (language === "hi")
+      await page.getByRole("button", { name: "Switch to Hindi" }).click();
+    const findingLayout = await page
+      .locator("#report .finding")
+      .evaluate((finding) => {
+        const bounds = finding.getBoundingClientRect();
+        const elements = [...finding.querySelectorAll("h4,p,.status-tag")];
+        const textRects = elements.flatMap((element) => {
+          const range = document.createRange();
+          range.selectNodeContents(element);
+          return [...range.getClientRects()].map((rect) => ({
+            left: rect.left,
+            right: rect.right,
+          }));
+        });
+        const paragraph = finding.querySelector("p")!;
+        const range = document.createRange();
+        range.selectNodeContents(paragraph);
+        return {
+          allTextInside: textRects.every(
+            (rect) =>
+              rect.left >= bounds.left - 1 && rect.right <= bounds.right + 1,
+          ),
+          wrappedLines: range.getClientRects().length,
+          paragraphWidth: paragraph.clientWidth,
+          paragraphScrollWidth: paragraph.scrollWidth,
+          text: paragraph.textContent,
+        };
+      });
+    expect(findingLayout.allTextInside).toBeTruthy();
+    expect(findingLayout.wrappedLines).toBeGreaterThan(1);
+    expect(findingLayout.paragraphScrollWidth).toBeLessThanOrEqual(
+      findingLayout.paragraphWidth + 1,
+    );
+    expect(findingLayout.text).toContain(
+      language === "hi"
+        ? "हानिकारक गतिविधि का प्रमाण नहीं"
+        : "not proof of harmful activity",
+    );
+  }
+});
+
+test("reviewers can publish the supported historical research category", async ({
+  page,
+}) => {
+  await mockRecordClient(page);
+  await page.goto("/reviewer");
+  await page
+    .getByRole("button", { name: "Connect wallet", exact: true })
+    .click();
+  await page.getByLabel("APK SHA-256", { exact: true }).fill(report.apk_sha256);
+  await page
+    .getByLabel("Package name", { exact: true })
+    .fill(report.package_name);
+  await page
+    .getByLabel("App display name", { exact: true })
+    .fill("Controlled historical sample");
+  await page
+    .getByLabel("Source reference", { exact: true })
+    .fill("https://example.org/research");
+  await page
+    .getByRole("combobox", { name: "Evidence category", exact: true })
+    .selectOption({ label: "Documented historical malware sample" });
+  await page
+    .getByRole("combobox", { name: "Concern level", exact: true })
+    .selectOption("high");
+  await page
+    .getByLabel("Evidence summary", { exact: true })
+    .fill(
+      "Controlled historical research attribution; not a real malware report.",
+    );
+  await page.getByRole("button", { name: "Switch to Hindi" }).click();
+  await expect(
+    page.getByRole("combobox", { name: "सबूत श्रेणी", exact: true }),
+  ).toHaveValue("documented_malware_sample");
+  await expect(
+    page.getByRole("option", {
+      name: "दस्तावेज़ित ऐतिहासिक मैलवेयर नमूना",
+      exact: true,
+    }),
+  ).toHaveCount(1);
+  await page.getByRole("button", { name: "Switch to English" }).click();
+  await page.getByRole("checkbox").check();
+  await page
+    .getByRole("button", { name: "Publish to Arkiv", exact: true })
+    .click();
+  await expect(
+    page.getByText("Record published", { exact: true }),
+  ).toBeVisible();
+  const published = await page.evaluate(
+    () =>
+      (window as unknown as { __publishedFixture: PublishInput })
+        .__publishedFixture,
+  );
+  expect(published.classification).toBe("documented_malware_sample");
+  expect(published.kind).toBe("advisory");
+  expect(published.reference_url).toBe("https://example.org/research");
+  const entity = await buildEntityInput(published);
+  expect(entity.flags.readonly).toBe(true);
 });
