@@ -1,9 +1,9 @@
 {
-  "verified_at": "2026-10-11T14:42:46.809Z",
+  "verified_at": "2026-10-11T16:36:53.183Z",
   "network": "Arkiv Tiramisu",
   "read_rpc_url": "https://scamsignal.ajnasnb.com/api/arkiv-rpc",
-  "live_query": "app_id = str('scamsignal-v1') AND schema_version = u64(1) AND $expiresAt > u64(440003) AND $creator = addr(0xd153C0cC313884DA0065615BB411Dfb8b873fE54)",
-  "read_block": "440003",
+  "live_query": "app_id = str('scamsignal-v1') AND schema_version = u64(1) AND $expiresAt > u64(443425) AND $creator = addr(0xd153C0cC313884DA0065615BB411Dfb8b873fE54)",
+  "read_block": "443426",
   "verified_record_count": 19,
   "expected_record_count": 19,
   "feed_checked": true,

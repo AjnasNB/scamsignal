@@ -750,18 +750,6 @@ export default function App() {
         </div>
         <div className="footer-links">
           <a
-            href="/demo/scamsignal-explainer.mp4"
-            target="_blank"
-            rel="noreferrer"
-          >
-            {tr("Watch the film", "फ़िल्म देखें")}
-            <ExternalLink size={12} />
-          </a>
-          <a href="/demo/scamsignal-app-passport.pptx" download>
-            {tr("Pitch deck", "प्रस्तुति")}
-            <ArrowDownToLine size={12} />
-          </a>
-          <a
             href="https://docs.arkiv.network/networks/tiramisu/"
             target="_blank"
             rel="noreferrer"
@@ -929,6 +917,7 @@ function EvaluationMatrix({
                 : tr("No exact match", "सटीक मिलान नहीं");
   return (
     <section
+      id="evaluation"
       className="evaluation-section container"
       aria-labelledby="evaluation-title"
     >
@@ -972,6 +961,19 @@ function EvaluationMatrix({
           "Precomputed static reports. An upstream release is not a safety guarantee; training controls are deliberately vulnerable, not real-world scam cases. Sample APKs are not redistributed here.",
           "पहले से तैयार स्थिर रिपोर्ट। मूल रिलीज़ सुरक्षा की गारंटी नहीं; प्रशिक्षण नमूने जानबूझकर असुरक्षित हैं, वास्तविक घोटाले नहीं। यहाँ नमूनों की APK वितरित नहीं होती।",
         )}
+      </p>
+      <p className="evaluation-downloads">
+        <a href="/reports/scamsignal-apk-evaluation.pdf" download>
+          {tr("Download test report (PDF)", "जाँच रिपोर्ट डाउनलोड करें (PDF)")}
+        </a>
+        <span aria-hidden="true">·</span>
+        <a href="/reports/scamsignal-apk-evaluation.csv" download>
+          {tr("Results (CSV)", "नतीजे (CSV)")}
+        </a>
+        <span aria-hidden="true">·</span>
+        <a href="/reports/scamsignal-apk-evaluation.json" download>
+          {tr("Evidence (JSON)", "सबूत (JSON)")}
+        </a>
       </p>
       <div className="evaluation-toolbar">
         <div

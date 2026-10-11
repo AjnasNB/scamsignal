@@ -106,6 +106,10 @@ Real APKs were inspected without installation or execution. Five releases came f
 
 Method: Androguard **4.1.4** and Android Build Tools **35.0.0** signature verification. Results, file hashes, signing fingerprints, pinned sources, primary research digests, licences, and analysis limits are in [`scanner/evaluation.json`](scanner/evaluation.json). These selected examples demonstrate integration behavior; they do not establish detection accuracy, current India-specific threat coverage, or production antivirus performance.
 
+The [downloadable PDF report](https://scamsignal.ajnasnb.com/reports/scamsignal-apk-evaluation.pdf), [CSV results](https://scamsignal.ajnasnb.com/reports/scamsignal-apk-evaluation.csv), and [JSON evidence](https://scamsignal.ajnasnb.com/reports/scamsignal-apk-evaluation.json) appear beside the evaluation table in the live app. They include exact file and certificate fingerprints, primary sources, the original API run, and a separately dated Arkiv verification. They preserve the distinction between measured findings and source-backed classifications.
+
+To regenerate the report from recorded evidence, install Python `reportlab`, run `npm run arkiv:verify` while records are live, then run `python scripts/build-evaluation-report.py`. The generator checks that the detailed dataset agrees with the recorded API results and writes artifacts to `output/pdf` and `apps/web/public/reports`. It does not install, execute, or redistribute APK inputs.
+
 ```sh
 python -m scanner.evaluate --download
 ```
